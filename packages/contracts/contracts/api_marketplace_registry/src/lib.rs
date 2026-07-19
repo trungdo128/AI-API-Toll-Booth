@@ -39,6 +39,7 @@ pub enum ContractError {
     ApiAlreadyExists = 3,
     ProviderNotFound = 4,
     UnauthorizedAdmin = 5,
+    UnauthorizedProvider = 6,
 }
 
 #[contractimpl]
@@ -150,6 +151,24 @@ impl ApiMarketplaceRegistry {
             .persistent()
             .get(&DataKey::Api(api_id))
             .unwrap()
+    }
+
+    pub fn update_api_price(
+        env: Env,
+        provider: Address,
+        api_id: Symbol,
+        price: i128,
+    ) -> Result<(), ContractError> {
+        let key = DataKey::Api(api_id);
+        let mut product: ApiProduct = env.storage().persistent().get(&key).unwrap();
+        if product.provider != provider {
+            return Err(ContractError::UnauthorizedProvider);
+        }
+
+        provider.require_auth();
+        product.price = price;
+        env.storage().persistent().set(&key, &product);
+        Ok(())
     }
 }
 
