@@ -6,6 +6,10 @@ AI API Toll Booth is a Stellar Testnet API marketplace where providers can sell 
 
 The registry is deployed and initialized on Stellar Testnet. Mainnet deployment, stablecoin integration, user evidence, external audits, and demo video are intentionally not claimed.
 
+## Railway deployment
+
+Railway successfully deployed the current `development` revision on 2026-07-19. The service is configured to run `pnpm start`, exposes `/health`, and applies the Neon schema with `pnpm migrate`. [Railway deployment dashboard](https://railway.com/project/1d4b1ad2-2416-466f-90de-a272e3f6b28b?environmentId=017eb7f9-e731-4a33-bee2-128d30e5d5eb)
+
 ## Testnet deployment
 
 - Registry v3: [`CDCXMAI7YIONRCQ5NYEM2KIODHQRWYIGYSL7OLMLYAUE63K5XYL3AL5K`](https://lab.stellar.org/r/testnet/contract/CDCXMAI7YIONRCQ5NYEM2KIODHQRWYIGYSL7OLMLYAUE63K5XYL3AL5K)
