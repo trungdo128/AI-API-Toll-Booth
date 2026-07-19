@@ -1,6 +1,6 @@
 #![no_std]
 
-use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Address, BytesN, Env};
+use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Address, BytesN, Env, Symbol};
 
 #[contract]
 pub struct ApiMarketplaceRegistry;
@@ -11,6 +11,7 @@ enum DataKey {
     Admin,
     PaymentAsset,
     Provider(Address),
+    Api(Symbol),
 }
 
 #[contracttype]
@@ -21,11 +22,21 @@ pub struct ProviderProfile {
     pub active: bool,
 }
 
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ApiProduct {
+    pub provider: Address,
+    pub price: i128,
+    pub active: bool,
+}
+
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ContractError {
     AlreadyInitialized = 1,
     ProviderAlreadyExists = 2,
+    ApiAlreadyExists = 3,
+    ProviderNotFound = 4,
 }
 
 #[contractimpl]
@@ -84,6 +95,42 @@ impl ApiMarketplaceRegistry {
         env.storage()
             .persistent()
             .get(&DataKey::Provider(provider))
+            .unwrap()
+    }
+
+    pub fn register_api(
+        env: Env,
+        provider: Address,
+        api_id: Symbol,
+        price: i128,
+    ) -> Result<(), ContractError> {
+        if !env
+            .storage()
+            .persistent()
+            .has(&DataKey::Provider(provider.clone()))
+        {
+            return Err(ContractError::ProviderNotFound);
+        }
+        if env.storage().persistent().has(&DataKey::Api(api_id.clone())) {
+            return Err(ContractError::ApiAlreadyExists);
+        }
+
+        provider.require_auth();
+        env.storage().persistent().set(
+            &DataKey::Api(api_id),
+            &ApiProduct {
+                provider,
+                price,
+                active: true,
+            },
+        );
+        Ok(())
+    }
+
+    pub fn api(env: Env, api_id: Symbol) -> ApiProduct {
+        env.storage()
+            .persistent()
+            .get(&DataKey::Api(api_id))
             .unwrap()
     }
 }
