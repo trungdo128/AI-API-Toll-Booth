@@ -8,11 +8,11 @@ The registry is deployed and initialized on Stellar Testnet. Mainnet deployment,
 
 ## Testnet deployment
 
-- Registry: [`CCK5A36MDO4VOCXX5S2SOMR7DOTBH3IIOT2UMB47JHESEVCW6TRZ2ZYR`](https://lab.stellar.org/r/testnet/contract/CCK5A36MDO4VOCXX5S2SOMR7DOTBH3IIOT2UMB47JHESEVCW6TRZ2ZYR)
-- Deploy transaction: [`1bf52f42…cff8e5`](https://stellar.expert/explorer/testnet/tx/1bf52f42a94f0f6b87f321cfbf03b69e6599aa95214e0c0ff22be21319cff8e5)
-- Initialize transaction: [`2b12c74c…0d8ddb`](https://stellar.expert/explorer/testnet/tx/2b12c74c15c5069529eac866a2fc41fd201135c241f5d8d984c839cfd20d8ddb)
+- Registry v2: [`CCPPSFL6A5VMZNOYH3J2YJREPTC6TJPQIKBXKF6IJ725CRYUDBVYRTKT`](https://lab.stellar.org/r/testnet/contract/CCPPSFL6A5VMZNOYH3J2YJREPTC6TJPQIKBXKF6IJ725CRYUDBVYRTKT)
+- Deploy transaction: [`593ce6de…6b9d21`](https://stellar.expert/explorer/testnet/tx/593ce6de10c9575a0cce16b849a8ede6be4f6096c9c7e4f1810f81e92d6b9d21)
+- Initialize transaction: [`fec6d7b3…427389`](https://stellar.expert/explorer/testnet/tx/fec6d7b32a8ec8f6e51d23e3b3ae5d8fca81f873d90c739dd132945ee7427389)
 - Payment asset: native Testnet XLM asset contract, used only for deployment verification—not represented as a stablecoin.
-- On-chain catalog evidence: test provider registration ([transaction](https://stellar.expert/explorer/testnet/tx/2f257836cbcc1ffa1fa0852f62268e899bddb5763bb0d5d18e9c5c82df088e98)) and `summary` API product registration ([transaction](https://stellar.expert/explorer/testnet/tx/0975928eefaf1d8332709296d745927d55148364ae21ad587194e89820eab177)).
+- On-chain catalog evidence: v2 provider registration ([transaction](https://stellar.expert/explorer/testnet/tx/79f31832115e666c083fe8a160d98ecc92a1b14e40be461e63e71696fa47d633)), `summary` API registration ([transaction](https://stellar.expert/explorer/testnet/tx/0ebd735056fba04886a92af7d2b2acd920b8b29704d829cc4e3f801141843ad9)), and provider-authorized price update to `300000` ([transaction](https://stellar.expert/explorer/testnet/tx/55e8ce5bc3d07b96227d7ef8062594aff5254142472d9b7ab529e36d957b6fe2)).
 
 ## Workspace
 
