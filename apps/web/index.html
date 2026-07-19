@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI API Toll Booth</title>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; background: #07111f; color: #e8f0ff; }
+      body { max-width: 960px; margin: auto; padding: 48px 24px; }
+      header, .card { border: 1px solid #24405f; border-radius: 18px; background: #0c1a2c; padding: 28px; }
+      header { background: linear-gradient(130deg, #143b68, #0c1a2c); }
+      h1 { margin: 0 0 8px; font-size: clamp(2rem, 7vw, 4rem); }
+      .eyebrow { color: #78b7ff; text-transform: uppercase; letter-spacing: .14em; font-size: .75rem; }
+      main { display: grid; gap: 18px; margin-top: 18px; }
+      .price { color: #8fe3bf; font-size: 1.4rem; font-weight: 700; }
+      button { background: #78b7ff; color: #07111f; border: 0; border-radius: 10px; padding: 12px 16px; font-weight: 700; }
+      code { color: #b9d7ff; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <p class="eyebrow">Stellar Testnet API marketplace</p>
+      <h1>Pay only when an API answers.</h1>
+      <p>Discover protected developer APIs. A missing valid receipt receives HTTP <code>402</code>; a verified receipt unlocks the response.</p>
+    </header>
+    <main>
+      <section class="card">
+        <p class="eyebrow">Featured API</p>
+        <h2>Deterministic summarizer</h2>
+        <p>Predictable sample endpoint for integrating the payment challenge flow.</p>
+        <p class="price">250,000 atomic units / request</p>
+        <button type="button" disabled>Wallet connection requires Testnet configuration</button>
+      </section>
+      <section class="card">
+        <h2>Integration flow</h2>
+        <p><code>GET /protected</code> → 402 challenge → sign Testnet payment → retry with receipt.</p>
+      </section>
+    </main>
+  </body>
+</html>
