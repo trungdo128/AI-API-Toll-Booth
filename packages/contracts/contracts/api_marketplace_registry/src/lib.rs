@@ -1,6 +1,6 @@
 #![no_std]
 
-use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Address, Env};
+use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Address, BytesN, Env};
 
 #[contract]
 pub struct ApiMarketplaceRegistry;
@@ -10,12 +10,22 @@ pub struct ApiMarketplaceRegistry;
 enum DataKey {
     Admin,
     PaymentAsset,
+    Provider(Address),
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ProviderProfile {
+    pub owner: Address,
+    pub metadata_hash: BytesN<32>,
+    pub active: bool,
 }
 
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ContractError {
     AlreadyInitialized = 1,
+    ProviderAlreadyExists = 2,
 }
 
 #[contractimpl]
@@ -45,6 +55,35 @@ impl ApiMarketplaceRegistry {
         env.storage()
             .instance()
             .get(&DataKey::PaymentAsset)
+            .unwrap()
+    }
+
+    pub fn register_provider(
+        env: Env,
+        provider: Address,
+        metadata_hash: BytesN<32>,
+    ) -> Result<(), ContractError> {
+        let key = DataKey::Provider(provider.clone());
+        if env.storage().persistent().has(&key) {
+            return Err(ContractError::ProviderAlreadyExists);
+        }
+
+        provider.require_auth();
+        env.storage().persistent().set(
+            &key,
+            &ProviderProfile {
+                owner: provider,
+                metadata_hash,
+                active: true,
+            },
+        );
+        Ok(())
+    }
+
+    pub fn provider(env: Env, provider: Address) -> ProviderProfile {
+        env.storage()
+            .persistent()
+            .get(&DataKey::Provider(provider))
             .unwrap()
     }
 }
