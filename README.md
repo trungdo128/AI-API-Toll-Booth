@@ -15,3 +15,13 @@ Implementation has started on the `development` branch. Mainnet deployment, Main
 - `packages/stellar` — wallet and Stellar transaction utilities
 - `packages/api-sdk` — reusable paid API client
 - `docs` — architecture, security, deployment, and evidence records
+
+## Local checks
+
+```powershell
+pnpm test
+Set-Location packages/contracts
+cargo test
+```
+
+Open `apps/web/index.html` for the current marketplace demo. The API module verifies receipts through an injected verifier; connecting it to a deployed Testnet receipt indexer remains required before a payment claim can be made.
