@@ -13,8 +13,15 @@
       .eyebrow { color: #78b7ff; text-transform: uppercase; letter-spacing: .14em; font-size: .75rem; }
       main { display: grid; gap: 18px; margin-top: 18px; }
       .price { color: #8fe3bf; font-size: 1.4rem; font-weight: 700; }
-      button { background: #78b7ff; color: #07111f; border: 0; border-radius: 10px; padding: 12px 16px; font-weight: 700; }
+      button { background: #78b7ff; color: #07111f; border: 0; border-radius: 10px; padding: 12px 16px; font-weight: 700; cursor: pointer; }
+      button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+      button[disabled] { cursor: not-allowed; opacity: .6; }
       code { color: #b9d7ff; }
+      dialog { color: #e8f0ff; background: #10233a; border: 1px solid #78b7ff; border-radius: 18px; max-width: 440px; padding: 24px; }
+      dialog::backdrop { background: rgb(0 0 0 / .7); }
+      .wallet-option { display: flex; justify-content: space-between; gap: 12px; width: 100%; margin: 10px 0; text-align: left; }
+      .wallet-status { min-height: 1.5em; color: #b9d7ff; }
+      .connected { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     </style>
   </head>
   <body>
@@ -29,12 +36,58 @@
         <h2>Deterministic summarizer</h2>
         <p>Predictable sample endpoint for integrating the payment challenge flow.</p>
         <p class="price">300,000 atomic units / request</p>
-        <button type="button" disabled>Wallet connection requires Testnet configuration</button>
+        <button type="button" id="wallet-button">Connect Testnet wallet</button>
+        <p class="wallet-status" id="wallet-status" role="status" aria-live="polite">Freighter or Rabet; only your public address is stored.</p>
       </section>
       <section class="card">
         <h2>Integration flow</h2>
         <p><code>GET /api/protected</code> → 402 challenge → sign Testnet payment → retry with receipt.</p>
       </section>
     </main>
+    <dialog id="wallet-dialog" aria-labelledby="wallet-title">
+      <h2 id="wallet-title">Connect a Stellar Testnet wallet</h2>
+      <p>Select an installed extension. Freighter network is checked before connection; Rabet receives Testnet when a transaction is requested.</p>
+      <button class="wallet-option" data-wallet="freighter" type="button"><span>Freighter</span><span id="freighter-state">Checking…</span></button>
+      <button class="wallet-option" data-wallet="rabet" type="button"><span>Rabet</span><span id="rabet-state">Checking…</span></button>
+      <button id="wallet-close" type="button">Close</button>
+    </dialog>
+    <script type="module">
+      import { abbreviateAddress, connectWallet, disconnectWallet, walletAvailability } from "/wallet.js";
+
+      const dialog = document.querySelector("#wallet-dialog");
+      const button = document.querySelector("#wallet-button");
+      const status = document.querySelector("#wallet-status");
+      const storageKey = "ai-api-toll-booth-wallet";
+      let wallet = null;
+
+      function render() {
+        if (!wallet) {
+          button.textContent = "Connect Testnet wallet";
+          status.textContent = "Freighter or Rabet; only your public address is stored.";
+          return;
+        }
+        button.textContent = `${wallet.kind === "freighter" ? "Freighter" : "Rabet"}: ${abbreviateAddress(wallet.address)}`;
+        status.innerHTML = `<span class="connected">Connected on Testnet · <button type="button" id="copy-address">Copy address</button><button type="button" id="disconnect-wallet">Disconnect</button></span>`;
+        document.querySelector("#copy-address").onclick = async () => { await navigator.clipboard.writeText(wallet.address); status.firstChild.textContent = "Address copied · "; };
+        document.querySelector("#disconnect-wallet").onclick = async () => { await disconnectWallet(wallet.kind); wallet = null; localStorage.removeItem(storageKey); render(); };
+      }
+
+      const availability = walletAvailability();
+      for (const kind of ["freighter", "rabet"]) {
+        document.querySelector(`#${kind}-state`).textContent = availability[kind] ? "Installed" : "Install extension";
+      }
+      button.onclick = () => dialog.showModal();
+      document.querySelector("#wallet-close").onclick = () => dialog.close();
+      document.querySelectorAll("[data-wallet]").forEach((option) => option.onclick = async () => {
+        try {
+          wallet = await connectWallet(option.dataset.wallet);
+          localStorage.setItem(storageKey, JSON.stringify(wallet));
+          dialog.close();
+          render();
+        } catch (error) { status.textContent = error.message; }
+      });
+      try { wallet = JSON.parse(localStorage.getItem(storageKey)); } catch { localStorage.removeItem(storageKey); }
+      render();
+    </script>
   </body>
 </html>

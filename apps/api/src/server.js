@@ -10,7 +10,8 @@ import { createTollHandler } from "./toll.js";
 
 const { Pool } = pg;
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
-const webRoot = join(dirname(fileURLToPath(import.meta.url)), "../../web/index.html");
+const webDir = join(dirname(fileURLToPath(import.meta.url)), "../../web");
+const webRoot = join(webDir, "index.html");
 const sessions = createDatabaseSessionService(pool);
 const toll = createTollHandler({
   price: 300_000,
@@ -65,6 +66,10 @@ createServer(async (request, response) => {
       } catch (error) {
         return sendJson(response, 422, { error: error.message });
       }
+    }
+    if (request.url === "/wallet.js") {
+      response.writeHead(200, { "content-type": "text/javascript; charset=utf-8" });
+      return response.end(await readFile(join(webDir, "wallet.js")));
     }
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     return response.end(await readFile(webRoot));
