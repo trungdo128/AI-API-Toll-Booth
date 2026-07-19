@@ -4,7 +4,14 @@ AI API Toll Booth is a Stellar Testnet API marketplace where providers can sell 
 
 ## Status
 
-Implementation has started on the `development` branch. Mainnet deployment, Mainnet claims, user evidence, external audits, and demo video are intentionally not claimed.
+The registry is deployed and initialized on Stellar Testnet. Mainnet deployment, stablecoin integration, user evidence, external audits, and demo video are intentionally not claimed.
+
+## Testnet deployment
+
+- Registry: [`CCK5A36MDO4VOCXX5S2SOMR7DOTBH3IIOT2UMB47JHESEVCW6TRZ2ZYR`](https://lab.stellar.org/r/testnet/contract/CCK5A36MDO4VOCXX5S2SOMR7DOTBH3IIOT2UMB47JHESEVCW6TRZ2ZYR)
+- Deploy transaction: [`1bf52f42…cff8e5`](https://stellar.expert/explorer/testnet/tx/1bf52f42a94f0f6b87f321cfbf03b69e6599aa95214e0c0ff22be21319cff8e5)
+- Initialize transaction: [`2b12c74c…0d8ddb`](https://stellar.expert/explorer/testnet/tx/2b12c74c15c5069529eac866a2fc41fd201135c241f5d8d984c839cfd20d8ddb)
+- Payment asset: native Testnet XLM asset contract, used only for deployment verification—not represented as a stablecoin.
 
 ## Workspace
 
