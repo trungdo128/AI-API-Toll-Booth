@@ -8,7 +8,7 @@ The registry is deployed and initialized on Stellar Testnet. Mainnet deployment,
 
 ## Railway deployment
 
-Railway successfully deployed the current `development` revision on 2026-07-19. The service is configured to run `pnpm start`, exposes `/health`, and applies the Neon schema with `pnpm migrate`. [Railway deployment dashboard](https://railway.com/project/1d4b1ad2-2416-466f-90de-a272e3f6b28b?environmentId=017eb7f9-e731-4a33-bee2-128d30e5d5eb)
+Railway successfully deployed the current `development` revision on 2026-07-19. The service runs `pnpm migrate && pnpm seed && pnpm start`, exposes `/health`, and uses Neon PostgreSQL. [Railway deployment dashboard](https://railway.com/project/1d4b1ad2-2416-466f-90de-a272e3f6b28b?environmentId=017eb7f9-e731-4a33-bee2-128d30e5d5eb)
 
 ## Testnet deployment
 
@@ -24,9 +24,7 @@ Railway successfully deployed the current `development` revision on 2026-07-19. 
 - `apps/api` — payment gateway and protected API service
 - `apps/agent-client` — HTTP 402-capable developer client
 - `packages/contracts` — Soroban marketplace registry
-- `packages/stellar` — wallet and Stellar transaction utilities
-- `packages/api-sdk` — reusable paid API client
-- `docs` — architecture, security, deployment, and evidence records
+- `docs` — security boundaries and verification records
 
 ## Local checks
 
@@ -37,3 +35,9 @@ cargo test
 ```
 
 Open `apps/web/index.html` for the current marketplace demo. The API module verifies receipts through an injected verifier; connecting it to a deployed Testnet receipt indexer remains required before a payment claim can be made.
+
+## Service configuration
+
+Set `DATABASE_URL` to the managed PostgreSQL connection string. `PORT` is optional and defaults to `3000`. Do not commit database credentials, wallet secrets, or Testnet key material.
+
+See [security boundaries](docs/security.md) and the [verification record](docs/verification.md) for the tested scope and known production gaps.
