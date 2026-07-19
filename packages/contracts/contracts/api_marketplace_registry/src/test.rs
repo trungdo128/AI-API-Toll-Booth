@@ -58,3 +58,17 @@ fn registers_an_active_api_product_with_a_price() {
     assert_eq!(product.price, 250_000i128);
     assert!(product.active);
 }
+
+#[test]
+fn lets_the_admin_pause_the_marketplace() {
+    let env = Env::default();
+    let contract_id = env.register(ApiMarketplaceRegistry, ());
+    let client = ApiMarketplaceRegistryClient::new(&env, &contract_id);
+    let admin = Address::generate(&env);
+
+    env.mock_all_auths();
+    client.initialize(&admin, &Address::generate(&env));
+    client.set_paused(&admin, &true);
+
+    assert!(client.paused());
+}

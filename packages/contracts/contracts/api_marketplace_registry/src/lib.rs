@@ -10,6 +10,7 @@ pub struct ApiMarketplaceRegistry;
 enum DataKey {
     Admin,
     PaymentAsset,
+    Paused,
     Provider(Address),
     Api(Symbol),
 }
@@ -37,6 +38,7 @@ pub enum ContractError {
     ProviderAlreadyExists = 2,
     ApiAlreadyExists = 3,
     ProviderNotFound = 4,
+    UnauthorizedAdmin = 5,
 }
 
 #[contractimpl]
@@ -55,6 +57,7 @@ impl ApiMarketplaceRegistry {
         env.storage()
             .instance()
             .set(&DataKey::PaymentAsset, &payment_asset);
+        env.storage().instance().set(&DataKey::Paused, &false);
         Ok(())
     }
 
@@ -67,6 +70,21 @@ impl ApiMarketplaceRegistry {
             .instance()
             .get(&DataKey::PaymentAsset)
             .unwrap()
+    }
+
+    pub fn set_paused(env: Env, admin: Address, paused: bool) -> Result<(), ContractError> {
+        let expected_admin: Address = env.storage().instance().get(&DataKey::Admin).unwrap();
+        if admin != expected_admin {
+            return Err(ContractError::UnauthorizedAdmin);
+        }
+
+        admin.require_auth();
+        env.storage().instance().set(&DataKey::Paused, &paused);
+        Ok(())
+    }
+
+    pub fn paused(env: Env) -> bool {
+        env.storage().instance().get(&DataKey::Paused).unwrap_or(false)
     }
 
     pub fn register_provider(
