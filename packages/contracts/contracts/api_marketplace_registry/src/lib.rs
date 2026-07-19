@@ -170,6 +170,24 @@ impl ApiMarketplaceRegistry {
         env.storage().persistent().set(&key, &product);
         Ok(())
     }
+
+    pub fn set_api_active(
+        env: Env,
+        provider: Address,
+        api_id: Symbol,
+        active: bool,
+    ) -> Result<(), ContractError> {
+        let key = DataKey::Api(api_id);
+        let mut product: ApiProduct = env.storage().persistent().get(&key).unwrap();
+        if product.provider != provider {
+            return Err(ContractError::UnauthorizedProvider);
+        }
+
+        provider.require_auth();
+        product.active = active;
+        env.storage().persistent().set(&key, &product);
+        Ok(())
+    }
 }
 
 mod test;

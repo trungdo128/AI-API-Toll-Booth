@@ -90,3 +90,21 @@ fn lets_the_product_provider_update_its_price() {
 
     assert_eq!(client.api(&api_id).price, 300_000i128);
 }
+
+#[test]
+fn lets_the_product_provider_disable_its_api() {
+    let env = Env::default();
+    let contract_id = env.register(ApiMarketplaceRegistry, ());
+    let client = ApiMarketplaceRegistryClient::new(&env, &contract_id);
+    let admin = Address::generate(&env);
+    let provider = Address::generate(&env);
+    let api_id = Symbol::new(&env, "summary");
+
+    env.mock_all_auths();
+    client.initialize(&admin, &Address::generate(&env));
+    client.register_provider(&provider, &BytesN::from_array(&env, &[7; 32]));
+    client.register_api(&provider, &api_id, &250_000i128);
+    client.set_api_active(&provider, &api_id, &false);
+
+    assert!(!client.api(&api_id).active);
+}
