@@ -12,6 +12,7 @@ The registry is deployed and initialized on Stellar Testnet. Mainnet deployment,
 - Deploy transaction: [`1bf52f42…cff8e5`](https://stellar.expert/explorer/testnet/tx/1bf52f42a94f0f6b87f321cfbf03b69e6599aa95214e0c0ff22be21319cff8e5)
 - Initialize transaction: [`2b12c74c…0d8ddb`](https://stellar.expert/explorer/testnet/tx/2b12c74c15c5069529eac866a2fc41fd201135c241f5d8d984c839cfd20d8ddb)
 - Payment asset: native Testnet XLM asset contract, used only for deployment verification—not represented as a stablecoin.
+- On-chain catalog evidence: test provider registration ([transaction](https://stellar.expert/explorer/testnet/tx/2f257836cbcc1ffa1fa0852f62268e899bddb5763bb0d5d18e9c5c82df088e98)) and `summary` API product registration ([transaction](https://stellar.expert/explorer/testnet/tx/0975928eefaf1d8332709296d745927d55148364ae21ad587194e89820eab177)).
 
 ## Workspace
 
