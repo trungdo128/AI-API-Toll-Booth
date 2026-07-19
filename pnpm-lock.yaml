@@ -8,4 +8,6 @@ importers:
 
   .: {}
 
+  apps/agent-client: {}
+
   apps/api: {}
