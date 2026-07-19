@@ -1,0 +1,10 @@
+{
+  "name": "ai-api-toll-booth",
+  "private": true,
+  "packageManager": "pnpm@10.18.3",
+  "scripts": {
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  }
+}
