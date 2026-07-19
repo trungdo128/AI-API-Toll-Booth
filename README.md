@@ -34,7 +34,7 @@ Set-Location packages/contracts
 cargo test
 ```
 
-Open `apps/web/index.html` for the current marketplace demo. The API module verifies receipts through an injected verifier; connecting it to a deployed Testnet receipt indexer remains required before a payment claim can be made.
+Open `apps/web/index.html` for the current marketplace demo. The API module verifies receipts through an injected verifier; connecting it to a deployed Testnet receipt indexer remains required before a payment claim can be made. `POST /api/sessions`, `POST /api/sessions/:id/consume`, and `POST /api/sessions/:id/close` persist and account for a receipt-backed session; they do not submit Stellar transactions themselves.
 
 ## Service configuration
 

@@ -27,11 +27,17 @@ await pool.query(`
     session_id TEXT PRIMARY KEY,
     wallet_address TEXT NOT NULL REFERENCES users(wallet_address),
     api_id TEXT NOT NULL REFERENCES api_products(api_id),
+    funding_receipt_id TEXT UNIQUE REFERENCES payment_receipts(receipt_id),
     credit_atomic BIGINT NOT NULL CHECK (credit_atomic > 0),
     remaining_atomic BIGINT NOT NULL CHECK (remaining_atomic >= 0),
     status TEXT NOT NULL CHECK (status IN ('OPEN', 'CLOSED')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   );
+  ALTER TABLE payment_sessions
+    ADD COLUMN IF NOT EXISTS funding_receipt_id TEXT REFERENCES payment_receipts(receipt_id);
+  CREATE UNIQUE INDEX IF NOT EXISTS payment_sessions_funding_receipt_id_key
+    ON payment_sessions (funding_receipt_id)
+    WHERE funding_receipt_id IS NOT NULL;
   CREATE TABLE IF NOT EXISTS usage_records (
     id BIGSERIAL PRIMARY KEY,
     session_id TEXT NOT NULL REFERENCES payment_sessions(session_id),

@@ -2,13 +2,16 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
+import { randomUUID } from "node:crypto";
 import pg from "pg";
 import { health } from "./health.js";
+import { createDatabaseSessionService } from "./session.js";
 import { createTollHandler } from "./toll.js";
 
 const { Pool } = pg;
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 const webRoot = join(dirname(fileURLToPath(import.meta.url)), "../../web/index.html");
+const sessions = createDatabaseSessionService(pool);
 const toll = createTollHandler({
   price: 300_000,
   verifyReceipt: async (receipt) => {
@@ -16,6 +19,20 @@ const toll = createTollHandler({
     return result.rowCount === 1;
   },
 });
+
+async function readJson(request) {
+  let body = "";
+  for await (const chunk of request) {
+    body += chunk;
+    if (body.length > 16_384) throw new Error("request body too large");
+  }
+  return JSON.parse(body || "{}");
+}
+
+function sendJson(response, status, body) {
+  response.writeHead(status, { "content-type": "application/json" });
+  response.end(JSON.stringify(body));
+}
 
 createServer(async (request, response) => {
   try {
@@ -28,6 +45,26 @@ createServer(async (request, response) => {
       const result = await toll({ headers: request.headers });
       response.writeHead(result.status, { "content-type": "application/json" });
       return response.end(JSON.stringify(result.body));
+    }
+    if (request.method === "POST" && request.url === "/api/sessions") {
+      try {
+        return sendJson(response, 201, await sessions.open({ id: randomUUID(), ...(await readJson(request)) }));
+      } catch (error) {
+        return sendJson(response, 422, { error: error.message });
+      }
+    }
+    const sessionRoute = request.url.match(/^\/api\/sessions\/([^/]+)\/(consume|close)$/);
+    if (request.method === "POST" && sessionRoute) {
+      try {
+        const [id, action] = sessionRoute.slice(1);
+        const body = await readJson(request);
+        const result = action === "consume"
+          ? await sessions.consume({ id, amount: body.amount })
+          : await sessions.close({ id });
+        return sendJson(response, 200, result);
+      } catch (error) {
+        return sendJson(response, 422, { error: error.message });
+      }
     }
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
     return response.end(await readFile(webRoot));
