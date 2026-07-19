@@ -72,7 +72,7 @@
         document.querySelector("#disconnect-wallet").onclick = async () => { await disconnectWallet(wallet.kind); wallet = null; localStorage.removeItem(storageKey); render(); };
       }
 
-      const availability = walletAvailability();
+      const availability = await walletAvailability();
       for (const kind of ["freighter", "rabet"]) {
         document.querySelector(`#${kind}-state`).textContent = availability[kind] ? "Installed" : "Install extension";
       }
