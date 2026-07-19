@@ -9,6 +9,6 @@ cargo test
 stellar contract build
 ```
 
-The release build produced `api_marketplace_registry.wasm` (4,744 bytes) with SHA-256 `a16181730d1b901e8dee62ef6b23a25a428b5518f88ab6e58043adef1925eae6`.
+The current release build produced `api_marketplace_registry.wasm` (5,705 bytes) with SHA-256 `a27a9e6ba9477469b48861e265d4793c42451bb708d4c00051124219f58e53b7`.
 
 This is a local build record, not a Testnet deployment claim.
