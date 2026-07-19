@@ -1,6 +1,8 @@
 #![no_std]
 
-use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Address, BytesN, Env, Symbol};
+use soroban_sdk::{
+    contract, contracterror, contractimpl, contracttype, Address, BytesN, Env, Symbol,
+};
 
 #[contract]
 pub struct ApiMarketplaceRegistry;
@@ -85,7 +87,10 @@ impl ApiMarketplaceRegistry {
     }
 
     pub fn paused(env: Env) -> bool {
-        env.storage().instance().get(&DataKey::Paused).unwrap_or(false)
+        env.storage()
+            .instance()
+            .get(&DataKey::Paused)
+            .unwrap_or(false)
     }
 
     pub fn register_provider(
@@ -130,7 +135,11 @@ impl ApiMarketplaceRegistry {
         {
             return Err(ContractError::ProviderNotFound);
         }
-        if env.storage().persistent().has(&DataKey::Api(api_id.clone())) {
+        if env
+            .storage()
+            .persistent()
+            .has(&DataKey::Api(api_id.clone()))
+        {
             return Err(ContractError::ApiAlreadyExists);
         }
 
