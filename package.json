@@ -8,6 +8,7 @@
     "test": "pnpm -r test",
     "test:contracts": "cargo test --manifest-path packages/contracts/Cargo.toml",
     "start": "pnpm --filter @toll-booth/api start",
-    "migrate": "pnpm --filter @toll-booth/api migrate"
+    "migrate": "pnpm --filter @toll-booth/api migrate",
+    "seed": "pnpm --filter @toll-booth/api seed"
   }
 }
