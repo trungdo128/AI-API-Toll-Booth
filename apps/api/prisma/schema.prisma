@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProviderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum PaymentStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  EXPIRED
+}
+
+model WalletIdentity {
+  id         String          @id @default(uuid()) @db.Uuid
+  address    String          @unique
+  network    String
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  challenges AuthChallenge[]
+  sessions   UserSession[]
+  provider   Provider?
+  feedback   Feedback[]
+}
+
+model AuthChallenge {
+  id         String         @id @default(uuid()) @db.Uuid
+  walletId   String         @db.Uuid
+  wallet     WalletIdentity @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  nonceHash  String         @unique
+  origin     String
+  network    String
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime       @default(now())
+
+  @@index([walletId, expiresAt])
+}
+
+model UserSession {
+  id         String         @id @default(uuid()) @db.Uuid
+  walletId   String         @db.Uuid
+  wallet     WalletIdentity @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  tokenHash  String         @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime       @default(now())
+
+  @@index([walletId, expiresAt])
+}
+
+model Provider {
+  id             String                @id @default(uuid()) @db.Uuid
+  walletId       String                @unique @db.Uuid
+  wallet         WalletIdentity        @relation(fields: [walletId], references: [id])
+  displayName    String
+  description    String
+  status         ProviderStatus        @default(PENDING)
+  metadataHash   String?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  applications   ProviderApplication[]
+  products       ApiProduct[]
+}
+
+model ProviderApplication {
+  id          String         @id @default(uuid()) @db.Uuid
+  providerId  String         @db.Uuid
+  provider    Provider       @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  statement   String
+  status      ProviderStatus @default(PENDING)
+  reviewedAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model ApiProduct {
+  id                  String             @id @default(uuid()) @db.Uuid
+  slug                String             @unique
+  providerId          String             @db.Uuid
+  provider            Provider           @relation(fields: [providerId], references: [id])
+  title               String
+  description         String
+  category            String
+  upstreamUrlEncrypted String
+  credentialEncrypted String?
+  active              Boolean            @default(false)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  plans               ApiPlan[]
+  challenges          PaymentChallenge[]
+  requests            ApiRequest[]
+
+  @@index([active, category, createdAt])
+  @@index([providerId, active])
+}
+
+model ApiPlan {
+  id          String     @id @default(uuid()) @db.Uuid
+  apiProductId String    @db.Uuid
+  apiProduct  ApiProduct @relation(fields: [apiProductId], references: [id], onDelete: Cascade)
+  name        String
+  mode        String
+  asset       String
+  amount      BigInt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([apiProductId, name])
+}
+
+model PaymentChallenge {
+  id             String        @id @default(uuid()) @db.Uuid
+  apiProductId   String        @db.Uuid
+  apiProduct     ApiProduct    @relation(fields: [apiProductId], references: [id])
+  requestHash    String
+  nonceHash      String        @unique
+  network        String
+  asset          String
+  recipient      String
+  amount         BigInt
+  status         PaymentStatus @default(PENDING)
+  expiresAt      DateTime
+  consumedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  receipt        PaymentReceipt?
+
+  @@index([status, expiresAt])
+  @@index([apiProductId, createdAt])
+}
+
+model PaymentReceipt {
+  id                 String           @id @default(uuid()) @db.Uuid
+  challengeId        String           @unique @db.Uuid
+  challenge          PaymentChallenge @relation(fields: [challengeId], references: [id])
+  transactionHash    String           @unique
+  ledger             Int
+  payerAddress       String
+  confirmedAt        DateTime
+  createdAt          DateTime         @default(now())
+  apiRequests        ApiRequest[]
+  fundedSession      PaymentSession?
+}
+
+model PaymentSession {
+  id                  String          @id @default(uuid()) @db.Uuid
+  walletAddress       String
+  receiptId           String          @unique @db.Uuid
+  receipt             PaymentReceipt  @relation(fields: [receiptId], references: [id])
+  fundedAmount        BigInt
+  consumedAmount      BigInt          @default(0)
+  expiresAt           DateTime
+  closedAt            DateTime?
+  settlementTxHash    String?         @unique
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  usage               UsageRecord[]
+
+  @@index([walletAddress, expiresAt])
+}
+
+model ApiRequest {
+  id              String          @id @default(uuid()) @db.Uuid
+  apiProductId    String          @db.Uuid
+  apiProduct      ApiProduct      @relation(fields: [apiProductId], references: [id])
+  receiptId       String?         @db.Uuid
+  receipt         PaymentReceipt? @relation(fields: [receiptId], references: [id])
+  idempotencyKey  String          @unique
+  requestHash     String
+  statusCode      Int
+  durationMs      Int
+  createdAt       DateTime        @default(now())
+  usage           UsageRecord?
+
+  @@index([apiProductId, createdAt])
+}
+
+model UsageRecord {
+  id               String          @id @default(uuid()) @db.Uuid
+  apiRequestId     String          @unique @db.Uuid
+  apiRequest       ApiRequest      @relation(fields: [apiRequestId], references: [id])
+  paymentSessionId String?         @db.Uuid
+  paymentSession   PaymentSession? @relation(fields: [paymentSessionId], references: [id])
+  amount           BigInt
+  createdAt        DateTime        @default(now())
+
+  @@index([paymentSessionId, createdAt])
+}
+
+model Feedback {
+  id          String          @id @default(uuid()) @db.Uuid
+  walletId    String?         @db.Uuid
+  wallet      WalletIdentity? @relation(fields: [walletId], references: [id])
+  rating      Int
+  message     String
+  createdAt   DateTime        @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actor       String
+  action      String
+  subjectType String
+  subjectId   String
+  metadata    Json
+  createdAt   DateTime @default(now())
+
+  @@index([subjectType, subjectId, createdAt])
+  @@index([actor, createdAt])
+}
+
+model AdminAction {
+  id          String   @id @default(uuid()) @db.Uuid
+  adminAddress String
+  action      String
+  targetType  String
+  targetId    String
+  reason      String
+  createdAt   DateTime @default(now())
+
+  @@index([adminAddress, createdAt])
+  @@index([targetType, targetId])
+}
