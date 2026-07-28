@@ -2,17 +2,17 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { connectWallet } from "./wallet.js";
 
-test("connects Freighter only when it reports Stellar Testnet", async () => {
+test("connects Freighter only when it reports Stellar Mainnet", async () => {
   const wallet = await connectWallet("freighter", {
     __freighterSdk: { freighterApi: {
-      requestAccess: async () => ({ address: "GTEST" }),
-      getNetwork: async () => ({ network: "TESTNET" }),
+      requestAccess: async () => ({ address: "GMAIN" }),
+      getNetwork: async () => ({ network: "PUBLIC" }),
       isConnected: async () => ({ isConnected: true }),
     } },
   });
-  assert.equal(wallet.address, "GTEST");
+  assert.deepEqual(wallet, { kind: "freighter", address: "GMAIN", signing: "signTransaction", network: "PUBLIC" });
   await assert.rejects(connectWallet("freighter", {
-    __freighterSdk: { freighterApi: { requestAccess: async () => ({ address: "GTEST" }), getNetwork: async () => ({ network: "PUBLIC" }), isConnected: async () => ({ isConnected: true }) } },
+    __freighterSdk: { freighterApi: { requestAccess: async () => ({ address: "GTEST" }), getNetwork: async () => ({ network: "TESTNET" }), isConnected: async () => ({ isConnected: true }) } },
   }), /Switch Freighter/);
 });
 
@@ -21,7 +21,7 @@ test("uses the official SDK connection check when no legacy global exists", asyn
     __freighterSdk: { freighterApi: {
       isConnected: async () => ({ isConnected: true }),
       requestAccess: async () => ({ address: "GSDK" }),
-      getNetwork: async () => ({ network: "TESTNET" }),
+      getNetwork: async () => ({ networkPassphrase: "Public Global Stellar Network ; September 2015" }),
     } },
   });
   assert.equal(wallet.address, "GSDK");
