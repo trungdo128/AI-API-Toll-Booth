@@ -26,3 +26,14 @@ test("uses the official SDK connection check when no legacy global exists", asyn
   });
   assert.equal(wallet.address, "GSDK");
 });
+
+test("uses the official browser global without transforming SDK exports", async () => {
+  const wallet = await connectWallet("freighter", {
+    freighterApi: {
+      isConnected: async () => ({ isConnected: true }),
+      requestAccess: async () => ({ address: "GBROWSER" }),
+      getNetwork: async () => ({ network: "PUBLIC" }),
+    },
+  });
+  assert.equal(wallet.address, "GBROWSER");
+});
