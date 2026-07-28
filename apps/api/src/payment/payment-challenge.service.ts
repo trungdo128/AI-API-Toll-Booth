@@ -38,11 +38,16 @@ export class PaymentChallengeService {
     return challenge;
   }
 
-  consume(id: string, transactionHash: string): PaymentChallenge {
+  get(id: string): PaymentChallenge {
     const challenge = this.challenges.get(id);
     if (!challenge) throw new Error("Payment challenge not found");
     if (challenge.transactionHash) throw new Error("Payment challenge already used");
     if (new Date(challenge.expiresAt) <= this.now()) throw new Error("Payment challenge expired");
+    return challenge;
+  }
+
+  consume(id: string, transactionHash: string): PaymentChallenge {
+    const challenge = this.get(id);
     challenge.transactionHash = transactionHash;
     return challenge;
   }

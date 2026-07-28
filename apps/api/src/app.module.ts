@@ -4,15 +4,24 @@ import { AppController } from "./app.controller.js";
 import { AuthController } from "./auth/auth.controller.js";
 import { ALLOWED_ORIGINS, WalletAuthService } from "./auth/wallet-auth.service.js";
 import { PaymentChallengeService } from "./payment/payment-challenge.service.js";
+import { HorizonTransactionLookup } from "./payment/horizon-transaction.lookup.js";
+import { PAYMENT_VERIFIER, PaymentController } from "./payment/payment.controller.js";
+import { PaymentVerifierService } from "./payment/payment-verifier.service.js";
 import { ReceiptRegistry } from "./receipt-registry.js";
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
-  controllers: [AppController, AuthController],
+  controllers: [AppController, AuthController, PaymentController],
   providers: [
     PaymentChallengeService,
     ReceiptRegistry,
     WalletAuthService,
+    {
+      provide: PAYMENT_VERIFIER,
+      useFactory: () => new PaymentVerifierService(new HorizonTransactionLookup(
+        process.env.STELLAR_HORIZON_URL || "https://horizon-testnet.stellar.org",
+      )),
+    },
     {
       provide: ALLOWED_ORIGINS,
       useFactory: () => (process.env.PUBLIC_ORIGIN || "http://localhost:3000")

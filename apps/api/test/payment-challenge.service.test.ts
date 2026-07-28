@@ -43,4 +43,19 @@ describe("PaymentChallengeService", () => {
     now = new Date("2026-07-28T10:06:00Z");
     expect(() => service.consume(second.id, "tx-2")).toThrow("Payment challenge expired");
   });
+
+  it("reads only a live unused challenge before transaction verification", () => {
+    const service = new PaymentChallengeService(() => new Date("2026-07-28T10:00:00Z"));
+    const challenge = service.issue({
+      apiId: "summarizer",
+      requestHash: "sha256:read",
+      network: "TESTNET",
+      asset: "native",
+      recipient: "GDESTINATION",
+      amount: "300000",
+    });
+    expect(service.get(challenge.id)).toMatchObject({ requestHash: "sha256:read" });
+    service.consume(challenge.id, "tx-read");
+    expect(() => service.get(challenge.id)).toThrow("Payment challenge already used");
+  });
 });
