@@ -31,7 +31,7 @@
   </head>
   <body>
     <header>
-      <p class="eyebrow">Stellar Mainnet API marketplace</p>
+      <p class="eyebrow">Stellar Testnet API marketplace</p>
       <h1>Pay only when an API answers.</h1>
       <p>Discover protected developer APIs. A missing valid receipt receives HTTP <code>402</code>; a verified receipt unlocks the response.</p>
     </header>
@@ -41,12 +41,12 @@
         <h2>Deterministic summarizer</h2>
         <p>Predictable sample endpoint for integrating the payment challenge flow.</p>
         <p class="price">300,000 atomic units / request</p>
-        <button type="button" id="wallet-button">Connect Mainnet wallet</button>
+        <button type="button" id="wallet-button">Connect Testnet wallet</button>
         <p class="wallet-status" id="wallet-status" role="status" aria-live="polite">Freighter or Rabet; only your public address is stored.</p>
       </section>
       <section class="card">
         <h2>Integration flow</h2>
-        <p><code>GET /api/protected</code> → 402 challenge → sign Mainnet payment → retry with receipt.</p>
+        <p><code>GET /api/protected</code> → 402 challenge → sign Testnet payment → retry with receipt.</p>
       </section>
       <section class="card api-console">
         <p class="eyebrow">Live API console</p>
@@ -59,8 +59,8 @@
       </section>
     </main>
     <dialog id="wallet-dialog" aria-labelledby="wallet-title">
-      <h2 id="wallet-title">Connect a Stellar Mainnet wallet</h2>
-      <p>Select an installed extension. Freighter network is checked before connection; Rabet receives Mainnet when a transaction is requested.</p>
+      <h2 id="wallet-title">Connect a Stellar Testnet wallet</h2>
+      <p>Select an installed extension. Freighter network is checked before connection; Rabet receives Testnet when a transaction is requested.</p>
       <button class="wallet-option" data-wallet="freighter" type="button"><span>Freighter</span><span id="freighter-state">Checking…</span></button>
       <button class="wallet-option" data-wallet="rabet" type="button"><span>Rabet</span><span id="rabet-state">Checking…</span></button>
       <button id="wallet-close" type="button">Close</button>
@@ -78,12 +78,12 @@
 
       function render() {
         if (!wallet) {
-          button.textContent = "Connect Mainnet wallet";
+          button.textContent = "Connect Testnet wallet";
           status.textContent = "Freighter or Rabet; only your public address is stored.";
           return;
         }
         button.textContent = `${wallet.kind === "freighter" ? "Freighter" : "Rabet"}: ${abbreviateAddress(wallet.address)}`;
-        status.innerHTML = `<span class="connected">Connected on Mainnet · <button type="button" id="copy-address">Copy address</button><button type="button" id="disconnect-wallet">Disconnect</button></span>`;
+        status.innerHTML = `<span class="connected">Connected on Testnet · <button type="button" id="copy-address">Copy address</button><button type="button" id="disconnect-wallet">Disconnect</button></span>`;
         document.querySelector("#copy-address").onclick = async () => { await navigator.clipboard.writeText(wallet.address); status.firstChild.textContent = "Address copied · "; };
         document.querySelector("#disconnect-wallet").onclick = async () => { await disconnectWallet(wallet.kind); wallet = null; localStorage.removeItem(storageKey); render(); };
       }
@@ -117,7 +117,7 @@
       };
       try {
         wallet = JSON.parse(localStorage.getItem(storageKey));
-        if (wallet && !["PUBLIC", "PUBLIC_REQUESTED"].includes(wallet.network)) {
+        if (wallet && !["TESTNET", "TESTNET_REQUESTED"].includes(wallet.network)) {
           wallet = null;
           localStorage.removeItem(storageKey);
         }
