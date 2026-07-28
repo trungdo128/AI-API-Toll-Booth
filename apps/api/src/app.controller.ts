@@ -1,0 +1,37 @@
+import { Controller, Get, Header, Headers, HttpException, Inject } from "@nestjs/common";
+import { PaymentChallengeService } from "./payment/payment-challenge.service.js";
+import { ReceiptRegistry } from "./receipt-registry.js";
+
+@Controller()
+export class AppController {
+  constructor(
+    private readonly challenges: PaymentChallengeService,
+    @Inject(ReceiptRegistry) private readonly receipts: Pick<ReceiptRegistry, "has">,
+  ) {}
+
+  @Get("health")
+  health() {
+    return { status: "ok", service: "ai-api-toll-booth", network: "TESTNET" };
+  }
+
+  @Get("api/protected")
+  @Header("Cache-Control", "no-store")
+  protectedApi(
+    @Headers("x-payment-receipt") receipt?: string,
+    @Headers("x-request-hash") requestHash = "sha256:demo-request",
+  ) {
+    if (receipt && this.receipts.has(receipt)) {
+      return { summary: "Access granted", deterministic: true };
+    }
+
+    const challenge = this.challenges.issue({
+      apiId: "deterministic-summarizer",
+      requestHash,
+      network: "TESTNET",
+      asset: process.env.STELLAR_PAYMENT_ASSET || "native",
+      recipient: process.env.PAYMENT_RECIPIENT || "CONFIGURE_PAYMENT_RECIPIENT",
+      amount: "300000",
+    });
+    throw new HttpException({ paymentRequired: true, ...challenge }, 402);
+  }
+}
