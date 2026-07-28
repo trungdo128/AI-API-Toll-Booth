@@ -8,6 +8,7 @@ import { HorizonTransactionLookup } from "./payment/horizon-transaction.lookup.j
 import { PAYMENT_VERIFIER, PaymentController } from "./payment/payment.controller.js";
 import { PaymentVerifierService } from "./payment/payment-verifier.service.js";
 import { ReceiptRegistry } from "./receipt-registry.js";
+import { PrismaService } from "./database/prisma.service.js";
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
@@ -16,6 +17,7 @@ import { ReceiptRegistry } from "./receipt-registry.js";
     PaymentChallengeService,
     ReceiptRegistry,
     WalletAuthService,
+    PrismaService,
     {
       provide: PAYMENT_VERIFIER,
       useFactory: () => new PaymentVerifierService(new HorizonTransactionLookup(
