@@ -14,6 +14,7 @@ const webDir = join(dirname(fileURLToPath(import.meta.url)), "../../web");
 const webRoot = join(webDir, "index.html");
 const sessions = createDatabaseSessionService(pool);
 const toll = createTollHandler({
+  asset: process.env.STELLAR_PAYMENT_ASSET || "native",
   price: 300_000,
   verifyReceipt: async (receipt) => {
     const result = await pool.query("SELECT 1 FROM payment_receipts WHERE receipt_id = $1", [receipt]);

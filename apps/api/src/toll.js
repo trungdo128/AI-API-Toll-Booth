@@ -1,11 +1,11 @@
-export function createTollHandler({ price, verifyReceipt }) {
+export function createTollHandler({ asset, price, verifyReceipt }) {
   return async ({ headers }) => {
     const receipt = headers["x-payment-receipt"];
     if (!receipt || !(await verifyReceipt(receipt))) {
       return {
         status: 402,
         body: {
-          asset: "testnet-configured-asset",
+          asset,
           price,
           paymentRequired: true,
         },
