@@ -9,15 +9,18 @@ import { PAYMENT_VERIFIER, PaymentController } from "./payment/payment.controlle
 import { PaymentVerifierService } from "./payment/payment-verifier.service.js";
 import { ReceiptRegistry } from "./receipt-registry.js";
 import { PrismaService } from "./database/prisma.service.js";
+import { CatalogController } from "./catalog/catalog.controller.js";
+import { CatalogService } from "./catalog/catalog.service.js";
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
-  controllers: [AppController, AuthController, PaymentController],
+  controllers: [AppController, AuthController, PaymentController, CatalogController],
   providers: [
     PaymentChallengeService,
     ReceiptRegistry,
     WalletAuthService,
     PrismaService,
+    CatalogService,
     {
       provide: PAYMENT_VERIFIER,
       useFactory: () => new PaymentVerifierService(new HorizonTransactionLookup(
