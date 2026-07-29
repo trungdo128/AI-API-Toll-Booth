@@ -1,25 +1,25 @@
 # AI API Toll Booth
 
-![Stellar Testnet](https://img.shields.io/badge/Stellar-Testnet-18C7FF?style=flat-square)
+![Stellar Mainnet](https://img.shields.io/badge/Stellar-Mainnet-14B8A6?style=flat-square)
 ![CI](https://img.shields.io/github/actions/workflow/status/trungdo128/AI-API-Toll-Booth/verify.yml?branch=development&label=verify&style=flat-square)
 
-AI API Toll Booth is a pay-per-request API marketplace. Providers publish approved API plans; clients receive an HTTP 402 challenge, pay the exact requirement on Stellar Testnet, and retry with a backend-verified receipt.
+AI API Toll Booth is a pay-per-request API marketplace. Providers publish approved API plans; clients receive an HTTP 402 challenge, approve the exact XLM payment in Freighter, and retry with a backend-verified Mainnet receipt.
 
 ## Problem and solution
 
-API buyers should not need a subscription before they know an endpoint is useful, and providers should not expose upstream credentials. The toll booth binds price, asset, recipient, request hash, nonce, network and expiry into one payment challenge. The backend verifies the Testnet transaction before granting access.
+API buyers should not need a subscription before they know an endpoint is useful, and providers should not expose upstream credentials. The toll booth binds price, asset, recipient, request hash, nonce, network and expiry into one payment challenge. The backend verifies the Mainnet transaction before granting access.
 
 ## Why Stellar
 
-Stellar provides low-cost settlement, fast finality, public transaction evidence and Soroban contracts for registry, pricing and administrative limits. This release is Testnet-only. Native Testnet XLM is used for technical verification and is not described as a stablecoin.
+Stellar provides low-cost settlement, fast finality, public transaction evidence and Soroban contracts for registry, pricing and administrative limits. The live release uses native Mainnet XLM.
 
 ## Roles and flow
 
-- Consumer: connect Freighter on Testnet, inspect a plan, request access, pay, then retry with the receipt.
+- Consumer: connect Freighter on Mainnet, inspect a plan, request access, approve the payment, then retry with the receipt.
 - Provider: apply, publish an encrypted-upstream API product and monitor usage.
 - Admin: approve or suspend providers/products, pause registry creation and review audit records.
 
-`request → HTTP 402 challenge → wallet approval → Testnet verification → receipt → retry → API response`
+`request → HTTP 402 challenge → wallet approval → Mainnet verification → receipt → retry → API response`
 
 ## Architecture
 
@@ -31,16 +31,16 @@ Stellar provides low-cost settlement, fast finality, public transaction evidence
 
 Private keys and seed phrases are never requested. Provider credentials remain server-side. Database URLs and operational secrets belong in Railway/`.env`, never Git.
 
-## Public Testnet environment
+## Live Mainnet deployment
 
 - Application: [ai-api-toll-booth-production.up.railway.app](https://ai-api-toll-booth-production.up.railway.app/)
 - Health: [ `/health` ](https://ai-api-toll-booth-production.up.railway.app/health)
-- Current Testnet registry: [`CCSC…LMQK`](https://lab.stellar.org/r/testnet/contract/CCSCHYIM3XNM7OD2264C2FR4MBN2EKCA7M7VVAJESS4SAXYU64H2LMQK)
-- Wasm/deployment transactions: [`64cbbcf7…18d8`](https://stellar.expert/explorer/testnet/tx/64cbbcf7bafe73e5a7ee7e121f140596f807c9b9326ec3454223b3be094718d8), [`ada21531…98a`](https://stellar.expert/explorer/testnet/tx/ada21531aef586dc7c1c8e06eb4bf2e9a0962d2744969ee72f2f358794fed98a)
-- Initialization transaction: [`8456ca00…05ad`](https://stellar.expert/explorer/testnet/tx/8456ca0074344acc1413145a19d1c108485501030ac39bc4a3b5d1b3086005ad)
-- Verified HTTP 402 payment receipt: [`f55fb51b…86cd`](https://stellar.expert/explorer/testnet/tx/f55fb51b5b7d6de9a2c19ed201602f79d6089d6e0db677c97d4cecfe92fc86cd)
+- Registry contract: [`CAUZ…LG7X`](https://stellar.expert/explorer/public/contract/CAUZWSIVXANXFQWJWY4QYWCZUBV7NNSG54C7IRYI2MY7DY2UYDIDLG7X)
+- Wasm upload: [`6a29e003…15ed`](https://stellar.expert/explorer/public/tx/6a29e0038c878587752b6e57a309f35ec97326a0efc286c6a60b67b0a09815ed)
+- Contract deployment: [`701f56be…fd6e`](https://stellar.expert/explorer/public/tx/701f56be39dc3b6eb67a9656695d4bae46bc76e8275d38fbee9be9b075fcfd6e)
+- Initialization: [`13cd387c…6a74`](https://stellar.expert/explorer/public/tx/13cd387c7a793b111a7f5a10d936ff3ca32390a78bb782b8364175df6b5e6a74)
 
-The payment receipt was verified by the deployed backend, then the same request retried successfully with HTTP 200. Full artifact and transaction metadata is recorded in [`deployments/testnet.json`](deployments/testnet.json).
+The browser builds one exact native-XLM payment, Freighter signs it, Horizon submits it, and the backend verifies the transaction before issuing a replay-safe receipt. Historical Testnet evidence remains in [`deployments/testnet.json`](deployments/testnet.json).
 
 ## Local setup
 
@@ -56,7 +56,7 @@ corepack pnpm build
 corepack pnpm start
 ```
 
-Configure `DATABASE_URL`, `PUBLIC_ORIGIN`, `SESSION_SECRET`, `STELLAR_RPC_URL`, `STELLAR_HORIZON_URL`, `STELLAR_PAYMENT_ASSET`, `PAYMENT_RECIPIENT` and the current Testnet contract ID. Never commit `.env`.
+Configure `DATABASE_URL`, `PUBLIC_ORIGIN`, `SESSION_SECRET`, `STELLAR_RPC_URL`, `STELLAR_HORIZON_URL`, `PAYMENT_ASSET`, `PAYMENT_RECIPIENT` and the Mainnet contract ID. Never commit `.env`.
 
 ## Verification
 
@@ -77,8 +77,8 @@ The current desktop and mobile layouts are captured by Playwright during verific
 
 ## Security and limitations
 
-- Testnet only; do not send Mainnet funds.
-- Freighter/Rabet extension signing evidence, 20 consented user flows, a real X launch URL and external audit evidence remain pending.
+- Mainnet payments move real XLM; confirm the amount and recipient in Freighter before signing.
+- Twenty consented user flows, a real X launch post URL and external audit evidence remain pending.
 - Internal review is not an external audit.
 - Exact 30 commits cannot be claimed: the repository history already exceeds 30 and has not been rewritten.
 
