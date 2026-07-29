@@ -63,8 +63,6 @@ Fourteen Mainnet users registered directly with the registry contract and then c
 | 13 | [`b28fd9a2…849f`](https://stellar.expert/explorer/public/tx/b28fd9a2e61f61095eda84dd55f3459d23352e01ae52501e43885c2479bc849f) | [`1b724896…6d11`](https://stellar.expert/explorer/public/tx/1b724896e1da4e2e66d4f90fc7125b8dcc3e4cd31d47aee5f5ac835b17356d11) |
 | 14 | [`cf03befc…c1e0`](https://stellar.expert/explorer/public/tx/cf03befc0d0932c258e23f9c6abbc53349f743589de3e577ccdfa3d433afc1e0) | [`4450114d…1ec4`](https://stellar.expert/explorer/public/tx/4450114d76babff0bffb5b20e23bdaca4133b2be7da4c91b195a0c95846a1ec4) |
 
-The 22-user Mainnet validation set is split across this project (users 01–14) and [Proof-of-Visit Deposit](https://github.com/thomashuyyngo/PoVDeposit) (users 15–22).
-
 ## Level 6 submission
 
 | Requirement | Evidence |
@@ -73,7 +71,7 @@ The 22-user Mainnet validation set is split across this project (users 01–14) 
 | Minimum 30+ meaningful commits | Repository history contains more than 30 commits |
 | Live Mainnet application | [Railway production](https://ai-api-toll-booth-production.up.railway.app/) |
 | Mainnet contract address | [`CAUZ…LG7X`](https://stellar.expert/explorer/public/contract/CAUZWSIVXANXFQWJWY4QYWCZUBV7NNSG54C7IRYI2MY7DY2UYDIDLG7X) |
-| Proof of Mainnet users | 14 direct contract users above; 22-user cross-project Mainnet set documented |
+| Proof of Mainnet users | 14 direct contract users with public transaction evidence above |
 | Transaction activity proof | Registry and verified-payment hashes above |
 | Audit/security review proof | [Full security audit report](docs/security/security-audit.md), [security policy](SECURITY.md) and [threat model](docs/security/threat-model.md) |
 | Twitter/X launch channel | [@Hsoboi](https://x.com/Hsoboi) |
