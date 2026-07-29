@@ -75,7 +75,7 @@ The 22-user Mainnet validation set is split across this project (users 01–14) 
 | Mainnet contract address | [`CAUZ…LG7X`](https://stellar.expert/explorer/public/contract/CAUZWSIVXANXFQWJWY4QYWCZUBV7NNSG54C7IRYI2MY7DY2UYDIDLG7X) |
 | Proof of Mainnet users | 14 direct contract users above; 22-user cross-project Mainnet set documented |
 | Transaction activity proof | Registry and verified-payment hashes above |
-| Audit/security review proof | [Security policy](SECURITY.md) and [internal threat model](docs/security/threat-model.md) |
+| Audit/security review proof | [Full security audit report](docs/security/security-audit.md), [security policy](SECURITY.md) and [threat model](docs/security/threat-model.md) |
 | Twitter/X launch channel | [@Hsoboi](https://x.com/Hsoboi) |
 | Demo video | [Google Drive walkthrough](https://drive.google.com/file/d/1Vg_dZoxW_-eq9xbKuzMGN3zEjX7rDLpH/view?usp=drive_link) |
 | Technical documentation | [Architecture](docs/architecture.md), [API reference](docs/api-reference.md), [contract guide](docs/contract-guide.md) |
