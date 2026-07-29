@@ -3,8 +3,8 @@
 - The Soroban registry requires the admin address to authorize initialization and global pause changes.
 - Provider and API registration require provider authorization; only a 32-byte metadata hash is stored for providers.
 - The API gateway never treats a hard-coded receipt as valid. Receipt acceptance is delegated to an injected verifier.
-- The web demo connects Freighter and Rabet extensions, stores only a public address locally, and requires Freighter to report Testnet before connecting. Payment transaction signing is not wired to the receipt verifier yet.
+- The web application connects wallet extensions, stores only a public address locally and requires Stellar Mainnet before a payment.
 - The agent client has no key handling. A caller supplies the signing callback.
-- The current Testnet deployment uses native XLM only for verification; it is not represented as a stablecoin integration.
+- The current Mainnet deployment settles in native XLM.
 
-Before production use, add a durable receipt indexer, replay protection, rate limiting, end-to-end wallet payment signing, and an independent contract review.
+The backend persists unique receipts, rejects replayed transactions and verifies the exact Mainnet payment before access. See the [security audit](security/security-audit.md).
