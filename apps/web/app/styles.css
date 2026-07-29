@@ -73,3 +73,4 @@ footer { min-height: 140px; display: flex; align-items: center; justify-content:
   .api-list article { grid-template-columns: 1fr; gap: .75rem; }.details { grid-template-columns: 1fr 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .gate canvas { display: none; } }
+.activity-list{display:grid;gap:12px}.activity-list a{display:flex;justify-content:space-between;gap:16px;padding:16px;border:1px solid var(--line);border-radius:12px;text-decoration:none}.activity-list span{color:var(--muted);font-family:monospace}

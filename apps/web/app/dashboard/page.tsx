@@ -1,5 +1,6 @@
 import { SectionPage } from "../../components/section-page";
+import { RecentActivity } from "../../components/recent-activity";
 
 export default function Dashboard() {
-  return <SectionPage title="Usage dashboard" intro="Receipts, paid requests and session balances for the connected Mainnet wallet."><p className="empty-state">Connect a wallet to load verified usage. No sample activity is presented as real data.</p></SectionPage>;
+  return <SectionPage title="Usage dashboard" intro="Verified Mainnet receipts recorded by the application."><RecentActivity /></SectionPage>;
 }

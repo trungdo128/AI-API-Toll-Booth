@@ -10,6 +10,11 @@ export class CatalogController {
     return this.catalog.list();
   }
 
+  @Get("activity/recent")
+  activity() {
+    return this.catalog.activity();
+  }
+
   @Get(":slug")
   async bySlug(@Param("slug") slug: string) {
     try {

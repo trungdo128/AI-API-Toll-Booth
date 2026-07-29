@@ -28,6 +28,20 @@ export class CatalogService {
     }));
   }
 
+  async activity() {
+    return this.prisma.paymentReceipt.findMany({
+      take: 50,
+      orderBy: { confirmedAt: "desc" },
+      select: {
+        payerAddress: true,
+        transactionHash: true,
+        ledger: true,
+        confirmedAt: true,
+        challenge: { select: { apiProduct: { select: { title: true } } } },
+      },
+    });
+  }
+
   async bySlug(slug: string) {
     const product = await this.prisma.apiProduct.findFirst({
       where: { slug, active: true, provider: { status: "APPROVED" } },
