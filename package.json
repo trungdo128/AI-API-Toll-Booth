@@ -4,6 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@10.18.3",
   "scripts": {
+    "postinstall": "corepack pnpm --filter @toll-booth/api exec prisma generate",
     "lint": "corepack pnpm -r lint",
     "typecheck": "corepack pnpm -r typecheck",
     "test": "corepack pnpm -r test",
