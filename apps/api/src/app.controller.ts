@@ -11,7 +11,7 @@ export class AppController {
 
   @Get("health")
   health() {
-    return { status: "ok", service: "ai-api-toll-booth", network: process.env.STELLAR_NETWORK || "TESTNET" };
+    return { status: "ok", service: "ai-api-toll-booth", network: (process.env.STELLAR_NETWORK || "TESTNET").toUpperCase() };
   }
 
   @Get("api/protected")
@@ -27,7 +27,7 @@ export class AppController {
     const challenge = await this.challenges.issue({
       apiId: "text-summarizer",
       requestHash,
-      network: (process.env.STELLAR_NETWORK || "TESTNET") as "TESTNET" | "PUBLIC",
+      network: (process.env.STELLAR_NETWORK || "TESTNET").toUpperCase() as "TESTNET" | "PUBLIC",
       asset: process.env.PAYMENT_ASSET || "native",
       recipient: process.env.PAYMENT_RECIPIENT
         || "GA6S6JMZEUJI6SWDJJG4KKLYXVHRFHXFJWTIY6MG57G7UEL2YN3N2TME",

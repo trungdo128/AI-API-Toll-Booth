@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getNetwork, isConnected, requestAccess } from "@stellar/freighter-api";
 import { isExpectedNetwork } from "../lib/network";
 
-const expectedNetwork = process.env.NEXT_PUBLIC_STELLAR_NETWORK || "TESTNET";
+const expectedNetwork = (process.env.NEXT_PUBLIC_STELLAR_NETWORK || "TESTNET").toUpperCase();
 const networkLabel = expectedNetwork === "PUBLIC" ? "Mainnet" : "Testnet";
 
 export function WalletButton() {
