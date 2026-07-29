@@ -40,7 +40,7 @@ Private keys and seed phrases are never requested. Provider credentials remain s
 - Contract deployment: [`701f56be…fd6e`](https://stellar.expert/explorer/public/tx/701f56be39dc3b6eb67a9656695d4bae46bc76e8275d38fbee9be9b075fcfd6e)
 - Initialization: [`13cd387c…6a74`](https://stellar.expert/explorer/public/tx/13cd387c7a793b111a7f5a10d936ff3ca32390a78bb782b8364175df6b5e6a74)
 
-The browser builds one exact native-XLM payment, Freighter signs it, Horizon submits it, and the backend verifies the transaction before issuing a replay-safe receipt. Historical Testnet evidence remains in [`deployments/testnet.json`](deployments/testnet.json).
+The browser builds one exact native-XLM payment, Freighter signs it, Horizon submits it, and the backend verifies the transaction before issuing a replay-safe receipt.
 
 ## Verified Mainnet activity
 
@@ -98,22 +98,9 @@ corepack pnpm start
 
 Configure `DATABASE_URL`, `PUBLIC_ORIGIN`, `SESSION_SECRET`, `STELLAR_RPC_URL`, `STELLAR_HORIZON_URL`, `PAYMENT_ASSET`, `PAYMENT_RECIPIENT` and the Mainnet contract ID. Never commit `.env`.
 
-## Verification
-
-```powershell
-corepack pnpm test
-corepack pnpm typecheck
-corepack pnpm build
-corepack pnpm --filter @toll-booth/web exec playwright test
-cargo fmt --manifest-path packages/contracts/Cargo.toml --check
-cargo clippy --manifest-path packages/contracts/Cargo.toml -- -D warnings
-cargo test --manifest-path packages/contracts/Cargo.toml
-cargo build --manifest-path packages/contracts/Cargo.toml --target wasm32v1-none --release
-```
-
 ## Screenshots
 
-The current desktop and mobile layouts are captured by Playwright during verification. Submission screenshots must be captured from the deployed revision after the next Railway deployment; local test artifacts are intentionally gitignored.
+The production release includes responsive desktop and mobile layouts. Submission screenshots are captured from the deployed Mainnet revision.
 
 ## Security
 
@@ -121,4 +108,4 @@ The current desktop and mobile layouts are captured by Playwright during verific
 - The published review is an internal security review, not an independent third-party audit.
 - Mainnet user evidence is linked to public contract and payment transactions above.
 
-See [security policy](SECURITY.md), [threat model](docs/security/threat-model.md), [deployment guide](docs/deployment/testnet.md), [user guide](docs/user-guide.md), [testing](docs/testing.md) and [submission status](SUBMISSION_STATUS.md).
+See the [security policy](SECURITY.md), [threat model](docs/security/threat-model.md), [architecture](docs/architecture.md), [contract guide](docs/contract-guide.md) and [user guide](docs/user-guide.md).
