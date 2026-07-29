@@ -4,6 +4,12 @@ use super::*;
 use soroban_sdk::{testutils::Address as _, Address, BytesN, Env, Symbol};
 
 #[test]
+fn uses_a_low_cost_ninety_day_ttl() {
+    assert_eq!(TTL_THRESHOLD, 14 * 17_280);
+    assert_eq!(TTL_EXTEND_TO, 90 * 17_280);
+}
+
+#[test]
 fn initializes_once_and_exposes_the_configured_asset() {
     let env = Env::default();
     let contract_id = env.register(ApiMarketplaceRegistry, ());

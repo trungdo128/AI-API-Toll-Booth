@@ -7,8 +7,8 @@ use soroban_sdk::{
 
 const VERSION: u32 = 1;
 const MAX_PRICE: i128 = 1_000_000_000_000_000_000;
-const TTL_THRESHOLD: u32 = 30 * 17_280;
-const TTL_EXTEND_TO: u32 = 365 * 17_280;
+const TTL_THRESHOLD: u32 = 14 * 17_280;
+const TTL_EXTEND_TO: u32 = 90 * 17_280;
 
 #[contract]
 pub struct ApiMarketplaceRegistry;
