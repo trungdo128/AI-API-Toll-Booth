@@ -17,7 +17,7 @@ describe("AuthController", () => {
       new WalletAuthService(() => new Date("2026-07-28T10:00:00Z"), ["https://app.example"]),
     );
     const response = await controller.challenge("https://app.example", { address: wallet.publicKey() });
-    expect(response).toMatchObject({ network: "TESTNET" });
+    expect(response).toMatchObject({ network: "PUBLIC" });
     expect(response).not.toHaveProperty("token");
   });
 });

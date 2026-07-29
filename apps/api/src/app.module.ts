@@ -24,8 +24,8 @@ import { CatalogService } from "./catalog/catalog.service.js";
     {
       provide: PAYMENT_VERIFIER,
       useFactory: () => new PaymentVerifierService(new HorizonTransactionLookup(
-        process.env.STELLAR_HORIZON_URL || "https://horizon-testnet.stellar.org",
-      ), (process.env.STELLAR_NETWORK || "TESTNET").toUpperCase()),
+        "https://horizon.stellar.org",
+      ), "PUBLIC"),
     },
     {
       provide: ALLOWED_ORIGINS,

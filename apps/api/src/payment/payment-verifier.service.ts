@@ -34,7 +34,7 @@ export class PaymentVerifierService {
 
   constructor(
     private readonly lookup: TransactionLookup,
-    private readonly network = process.env.STELLAR_NETWORK || "TESTNET",
+    private readonly network = "PUBLIC",
   ) {}
 
   async verify(transactionHash: string, requirement: Requirement) {

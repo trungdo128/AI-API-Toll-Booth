@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { PaymentVerifierService } from "../src/payment/payment-verifier.service.js";
 
 const requirement = {
-  network: "TESTNET" as const,
+  network: "PUBLIC" as const,
   asset: "native",
   recipient: "GDESTINATION",
   amount: "300000",
 };
 
 describe("PaymentVerifierService", () => {
-  it("accepts one confirmed Testnet payment with exact asset, recipient, and amount", async () => {
+  it("accepts one confirmed Mainnet payment with exact asset, recipient, and amount", async () => {
     const service = new PaymentVerifierService({
       transaction: async () => ({
         successful: true,

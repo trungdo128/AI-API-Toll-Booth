@@ -11,7 +11,7 @@ export class AppController {
 
   @Get("health")
   health() {
-    return { status: "ok", service: "ai-api-toll-booth", network: (process.env.STELLAR_NETWORK || "TESTNET").toUpperCase() };
+    return { status: "ok", service: "ai-api-toll-booth", network: "PUBLIC" };
   }
 
   @Get("api/protected")
@@ -27,10 +27,9 @@ export class AppController {
     const challenge = await this.challenges.issue({
       apiId: "text-summarizer",
       requestHash,
-      network: (process.env.STELLAR_NETWORK || "TESTNET").toUpperCase() as "TESTNET" | "PUBLIC",
+      network: "PUBLIC",
       asset: process.env.PAYMENT_ASSET || "native",
-      recipient: process.env.PAYMENT_RECIPIENT
-        || "GA6S6JMZEUJI6SWDJJG4KKLYXVHRFHXFJWTIY6MG57G7UEL2YN3N2TME",
+      recipient: "GCKJEORLGORT3BOUME2DQJQPKRSKST55BIZOSDZTNJ7FIGIV4KQMDDPX",
       amount: "300000",
     });
     throw new HttpException({ paymentRequired: true, ...challenge }, 402);

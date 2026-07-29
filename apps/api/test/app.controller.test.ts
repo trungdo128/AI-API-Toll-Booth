@@ -19,9 +19,9 @@ describe("AppController", () => {
       expect((error as HttpException).getStatus()).toBe(402);
       expect(response).toMatchObject({
         paymentRequired: true,
-        network: "TESTNET",
+        network: "PUBLIC",
         requestHash: "sha256:request",
-        recipient: "GA6S6JMZEUJI6SWDJJG4KKLYXVHRFHXFJWTIY6MG57G7UEL2YN3N2TME",
+        recipient: "GCKJEORLGORT3BOUME2DQJQPKRSKST55BIZOSDZTNJ7FIGIV4KQMDDPX",
       });
     }
   });
