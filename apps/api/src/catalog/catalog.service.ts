@@ -30,6 +30,7 @@ export class CatalogService {
 
   async activity() {
     return this.prisma.paymentReceipt.findMany({
+      where: { challenge: { network: "PUBLIC" } },
       take: 50,
       orderBy: { confirmedAt: "desc" },
       select: {
