@@ -4,14 +4,14 @@ import { AppController } from "../src/app.controller.js";
 import { PaymentChallengeService } from "../src/payment/payment-challenge.service.js";
 
 describe("AppController", () => {
-  it("returns a machine-readable HTTP 402 challenge", () => {
+  it("returns a machine-readable HTTP 402 challenge", async () => {
     const controller = new AppController(
       new PaymentChallengeService(() => new Date("2026-07-28T10:00:00Z")),
-      { has: () => false },
+      { has: async () => false },
     );
 
     try {
-      controller.protectedApi(undefined, "sha256:request");
+      await controller.protectedApi(undefined, "sha256:request");
       throw new Error("expected HTTP 402");
     } catch (error) {
       expect(error).toBeInstanceOf(HttpException);
@@ -25,11 +25,11 @@ describe("AppController", () => {
     }
   });
 
-  it("returns deterministic protected data for a known receipt", () => {
+  it("returns deterministic protected data for a known receipt", async () => {
     const controller = new AppController(new PaymentChallengeService(), {
-      has: (receipt) => receipt === "verified",
+      has: async (receipt) => receipt === "verified",
     });
-    expect(controller.protectedApi("verified", "sha256:request")).toEqual({
+    await expect(controller.protectedApi("verified", "sha256:request")).resolves.toEqual({
       summary: "Access granted",
       deterministic: true,
     });

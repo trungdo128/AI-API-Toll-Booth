@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { PaymentChallengeService } from "../src/payment/payment-challenge.service.js";
 
 describe("PaymentChallengeService", () => {
-  it("binds a short-lived challenge to the original request", () => {
+  it("binds a short-lived challenge to the original request", async () => {
     const service = new PaymentChallengeService(() => new Date("2026-07-28T10:00:00Z"));
-    const challenge = service.issue({
+    const challenge = await service.issue({
       apiId: "summarizer",
       requestHash: "sha256:abc",
       network: "TESTNET",
@@ -18,10 +18,10 @@ describe("PaymentChallengeService", () => {
     expect(challenge.requestHash).toBe("sha256:abc");
   });
 
-  it("rejects an expired or reused challenge", () => {
+  it("rejects an expired or reused challenge", async () => {
     let now = new Date("2026-07-28T10:00:00Z");
     const service = new PaymentChallengeService(() => now);
-    const first = service.issue({
+    const first = await service.issue({
       apiId: "summarizer",
       requestHash: "sha256:one",
       network: "TESTNET",
@@ -29,10 +29,10 @@ describe("PaymentChallengeService", () => {
       recipient: "GDESTINATION",
       amount: "300000",
     });
-    service.consume(first.id, "tx-1");
-    expect(() => service.consume(first.id, "tx-1")).toThrow("Payment challenge already used");
+    await service.consume(first.id, "tx-1");
+    await expect(service.consume(first.id, "tx-1")).rejects.toThrow("Payment challenge already used");
 
-    const second = service.issue({
+    const second = await service.issue({
       apiId: "summarizer",
       requestHash: "sha256:two",
       network: "TESTNET",
@@ -41,12 +41,12 @@ describe("PaymentChallengeService", () => {
       amount: "300000",
     });
     now = new Date("2026-07-28T10:06:00Z");
-    expect(() => service.consume(second.id, "tx-2")).toThrow("Payment challenge expired");
+    await expect(service.consume(second.id, "tx-2")).rejects.toThrow("Payment challenge expired");
   });
 
-  it("reads only a live unused challenge before transaction verification", () => {
+  it("reads only a live unused challenge before transaction verification", async () => {
     const service = new PaymentChallengeService(() => new Date("2026-07-28T10:00:00Z"));
-    const challenge = service.issue({
+    const challenge = await service.issue({
       apiId: "summarizer",
       requestHash: "sha256:read",
       network: "TESTNET",
@@ -54,8 +54,8 @@ describe("PaymentChallengeService", () => {
       recipient: "GDESTINATION",
       amount: "300000",
     });
-    expect(service.get(challenge.id)).toMatchObject({ requestHash: "sha256:read" });
-    service.consume(challenge.id, "tx-read");
-    expect(() => service.get(challenge.id)).toThrow("Payment challenge already used");
+    await expect(service.get(challenge.id)).resolves.toMatchObject({ requestHash: "sha256:read" });
+    await service.consume(challenge.id, "tx-read");
+    await expect(service.get(challenge.id)).rejects.toThrow("Payment challenge already used");
   });
 });

@@ -16,16 +16,16 @@ export class AppController {
 
   @Get("api/protected")
   @Header("Cache-Control", "no-store")
-  protectedApi(
+  async protectedApi(
     @Headers("x-payment-receipt") receipt?: string,
     @Headers("x-request-hash") requestHash = "sha256:demo-request",
   ) {
-    if (receipt && this.receipts.has(receipt)) {
+    if (receipt && await this.receipts.has(receipt)) {
       return { summary: "Access granted", deterministic: true };
     }
 
-    const challenge = this.challenges.issue({
-      apiId: "deterministic-summarizer",
+    const challenge = await this.challenges.issue({
+      apiId: "text-summarizer",
       requestHash,
       network: "TESTNET",
       asset: process.env.STELLAR_PAYMENT_ASSET || "native",

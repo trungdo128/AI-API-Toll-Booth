@@ -24,9 +24,9 @@ export class PaymentController {
     const input = verificationInput.safeParse(body);
     if (!input.success) throw new BadRequestException("Invalid payment verification request");
     try {
-      const challenge = this.challenges.get(input.data.challengeId);
+      const challenge = await this.challenges.get(input.data.challengeId);
       const verification = await this.verifier.verify(input.data.transactionHash, challenge);
-      this.challenges.consume(challenge.id, input.data.transactionHash);
+      await this.challenges.consume(challenge.id, input.data.transactionHash, verification);
       this.receipts.add(input.data.transactionHash);
       return {
         receipt: input.data.transactionHash,
