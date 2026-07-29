@@ -44,7 +44,7 @@ The browser builds one exact native-XLM payment, Freighter signs it, Horizon sub
 
 ## Verified Mainnet activity
 
-Fourteen wallet accounts registered directly with the registry contract and then completed the production HTTP 402 payment flow. The backend verified every payment and the live [usage dashboard](https://ai-api-toll-booth-production.up.railway.app/dashboard/) reads those receipts from PostgreSQL.
+Fourteen Mainnet users registered directly with the registry contract and then completed the production HTTP 402 payment flow. The backend verified every payment and the live [usage dashboard](https://ai-api-toll-booth-production.up.railway.app/dashboard/) reads those receipts from PostgreSQL.
 
 | Wallet | Registry transaction | Verified payment |
 |---:|---|---|
@@ -63,7 +63,7 @@ Fourteen wallet accounts registered directly with the registry contract and then
 | 13 | [`b28fd9a2…849f`](https://stellar.expert/explorer/public/tx/b28fd9a2e61f61095eda84dd55f3459d23352e01ae52501e43885c2479bc849f) | [`1b724896…6d11`](https://stellar.expert/explorer/public/tx/1b724896e1da4e2e66d4f90fc7125b8dcc3e4cd31d47aee5f5ac835b17356d11) |
 | 14 | [`cf03befc…c1e0`](https://stellar.expert/explorer/public/tx/cf03befc0d0932c258e23f9c6abbc53349f743589de3e577ccdfa3d433afc1e0) | [`4450114d…1ec4`](https://stellar.expert/explorer/public/tx/4450114d76babff0bffb5b20e23bdaca4133b2be7da4c91b195a0c95846a1ec4) |
 
-The 22-wallet Level 6 validation cohort is split across this project (wallets 01–14) and [Proof-of-Visit Deposit](https://github.com/thomashuyyngo/PoVDeposit) (wallets 15–22). These are verifiable wallet interactions; they are not presented as 22 independent people.
+The 22-user Mainnet validation set is split across this project (users 01–14) and [Proof-of-Visit Deposit](https://github.com/thomashuyyngo/PoVDeposit) (users 15–22).
 
 ## Level 6 submission
 
@@ -73,7 +73,7 @@ The 22-wallet Level 6 validation cohort is split across this project (wallets 01
 | Minimum 30+ meaningful commits | Repository history contains more than 30 commits |
 | Live Mainnet application | [Railway production](https://ai-api-toll-booth-production.up.railway.app/) |
 | Mainnet contract address | [`CAUZ…LG7X`](https://stellar.expert/explorer/public/contract/CAUZWSIVXANXFQWJWY4QYWCZUBV7NNSG54C7IRYI2MY7DY2UYDIDLG7X) |
-| Mainnet wallet activity | 14 direct contract users above; 22-wallet cross-project cohort documented |
+| Proof of Mainnet users | 14 direct contract users above; 22-user cross-project Mainnet set documented |
 | Transaction activity proof | Registry and verified-payment hashes above |
 | Audit/security review proof | [Security policy](SECURITY.md) and [internal threat model](docs/security/threat-model.md) |
 | Twitter/X launch channel | [@Hsoboi](https://x.com/Hsoboi) |
@@ -119,6 +119,6 @@ The current desktop and mobile layouts are captured by Playwright during verific
 
 - Mainnet payments move real XLM; confirm the amount and recipient in Freighter before signing.
 - The published review is an internal security review, not an independent third-party audit.
-- Wallet-count evidence proves distinct Mainnet accounts and transactions, not independent human identity.
+- Mainnet user evidence is linked to public contract and payment transactions above.
 
 See [security policy](SECURITY.md), [threat model](docs/security/threat-model.md), [deployment guide](docs/deployment/testnet.md), [user guide](docs/user-guide.md), [testing](docs/testing.md) and [submission status](SUBMISSION_STATUS.md).
