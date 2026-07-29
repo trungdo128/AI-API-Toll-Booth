@@ -35,11 +35,12 @@ Private keys and seed phrases are never requested. Provider credentials remain s
 
 - Application: [ai-api-toll-booth-production.up.railway.app](https://ai-api-toll-booth-production.up.railway.app/)
 - Health: [ `/health` ](https://ai-api-toll-booth-production.up.railway.app/health)
-- Previously verified Testnet registry: [`CDCX…AL5K`](https://lab.stellar.org/r/testnet/contract/CDCXMAI7YIONRCQ5NYEM2KIODHQRWYIGYSL7OLMLYAUE63K5XYL3AL5K)
-- Deployment transaction: [`78a69281…e76a9`](https://stellar.expert/explorer/testnet/tx/78a69281aa4fa4ebce28c6115e681bda9329963def563d8c12e0ee4d1c5e76a9)
-- Initialization transaction: [`834fe675…92aeb`](https://stellar.expert/explorer/testnet/tx/834fe675dca0d65a5497702cbf0a99e9835da772c2456b5be9f38d45d5e92aeb)
+- Current Testnet registry: [`CCSC…LMQK`](https://lab.stellar.org/r/testnet/contract/CCSCHYIM3XNM7OD2264C2FR4MBN2EKCA7M7VVAJESS4SAXYU64H2LMQK)
+- Wasm/deployment transactions: [`64cbbcf7…18d8`](https://stellar.expert/explorer/testnet/tx/64cbbcf7bafe73e5a7ee7e121f140596f807c9b9326ec3454223b3be094718d8), [`ada21531…98a`](https://stellar.expert/explorer/testnet/tx/ada21531aef586dc7c1c8e06eb4bf2e9a0962d2744969ee72f2f358794fed98a)
+- Initialization transaction: [`8456ca00…05ad`](https://stellar.expert/explorer/testnet/tx/8456ca0074344acc1413145a19d1c108485501030ac39bc4a3b5d1b3086005ad)
+- Verified HTTP 402 payment receipt: [`f55fb51b…86cd`](https://stellar.expert/explorer/testnet/tx/f55fb51b5b7d6de9a2c19ed201602f79d6089d6e0db677c97d4cecfe92fc86cd)
 
-The contract source has changed since that deployment. A fresh Testnet deployment and end-to-end payment evidence for the current Wasm are still required; the older address is retained only as historical verified evidence.
+The payment receipt was verified by the deployed backend, then the same request retried successfully with HTTP 200. Full artifact and transaction metadata is recorded in [`deployments/testnet.json`](deployments/testnet.json).
 
 ## Local setup
 
@@ -77,7 +78,7 @@ The current desktop and mobile layouts are captured by Playwright during verific
 ## Security and limitations
 
 - Testnet only; do not send Mainnet funds.
-- Current-source Testnet redeployment, current transaction smoke tests, 20 consented user flows, a real X launch URL and external audit evidence remain pending.
+- Freighter/Rabet extension signing evidence, 20 consented user flows, a real X launch URL and external audit evidence remain pending.
 - Internal review is not an external audit.
 - Exact 30 commits cannot be claimed: the repository history already exceeds 30 and has not been rewritten.
 

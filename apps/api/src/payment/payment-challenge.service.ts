@@ -5,7 +5,7 @@ import { PrismaService } from "../database/prisma.service.js";
 export type PaymentRequirement = {
   apiId: string;
   requestHash: string;
-  network: "TESTNET";
+  network: "TESTNET" | "PUBLIC";
   asset: string;
   recipient: string;
   amount: string;
@@ -75,7 +75,7 @@ export class PaymentChallengeService {
           id: stored.id,
           apiId: stored.apiProduct.slug,
           requestHash: stored.requestHash,
-          network: "TESTNET",
+          network: stored.network as "TESTNET" | "PUBLIC",
           asset: stored.asset,
           recipient: stored.recipient,
           amount: stored.amount.toString(),

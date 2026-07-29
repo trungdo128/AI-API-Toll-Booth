@@ -1,0 +1,20 @@
+{
+  "network": "TESTNET",
+  "deployedAt": "2026-07-29",
+  "sourceCommit": "91ca951164057fef6a72c6bb905ab59190ede974",
+  "contractId": "CCSCHYIM3XNM7OD2264C2FR4MBN2EKCA7M7VVAJESS4SAXYU64H2LMQK",
+  "wasmSha256": "4acd1614552fb7d6048a0edaf8cdb42373e3c23854271ad0465f395f9ea8b6ed",
+  "wasmBytes": 11387,
+  "acceptedAsset": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+  "deployer": "GB7CDHVP6LBMP3L5BJFXSTOWB4NX7ONPFN4537AFCWCNL7YD2MHSBZJN",
+  "transactions": {
+    "installWasm": "64cbbcf7bafe73e5a7ee7e121f140596f807c9b9326ec3454223b3be094718d8",
+    "deployContract": "ada21531aef586dc7c1c8e06eb4bf2e9a0962d2744969ee72f2f358794fed98a",
+    "initialize": "8456ca0074344acc1413145a19d1c108485501030ac39bc4a3b5d1b3086005ad",
+    "registerProvider": "d0d7719e2446c51faae09d662592f7800862eb2c7e7a23cbf6640123902dd99b",
+    "registerApi": "a1965cd3993031e874db95e264012a281f575dc52dd3818c86de9dfdd707fd57",
+    "paymentReceipt": "f55fb51b5b7d6de9a2c19ed201602f79d6089d6e0db677c97d4cecfe92fc86cd"
+  },
+  "applicationUrl": "https://ai-api-toll-booth-production.up.railway.app/",
+  "healthUrl": "https://ai-api-toll-booth-production.up.railway.app/health"
+}

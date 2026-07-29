@@ -9,6 +9,7 @@ type Challenge = {
   origin: string;
   message: string;
   expiresAt: string;
+  network: string;
   used: boolean;
 };
 
@@ -29,15 +30,16 @@ export class WalletAuthService {
     if (!this.origins.includes(origin)) throw new Error("Origin not allowed");
     Keypair.fromPublicKey(address);
     const id = randomUUID();
+    const network = process.env.STELLAR_NETWORK || "TESTNET";
     const expiresAt = new Date(this.now().getTime() + 5 * 60_000).toISOString();
-    const message = this.message(id, address, origin, expiresAt);
-    const challenge = { id, address, origin, message, expiresAt, used: false };
+    const message = this.message(id, address, origin, expiresAt, network);
+    const challenge = { id, address, origin, message, expiresAt, network, used: false };
     this.challenges.set(id, challenge);
     if (this.prisma) {
       const wallet = await this.prisma.walletIdentity.upsert({
         where: { address },
-        update: { network: "TESTNET" },
-        create: { address, network: "TESTNET" },
+        update: { network },
+        create: { address, network },
       });
       await this.prisma.authChallenge.create({
         data: {
@@ -45,12 +47,12 @@ export class WalletAuthService {
           walletId: wallet.id,
           nonceHash: this.hash(id),
           origin,
-          network: "TESTNET",
+          network,
           expiresAt: new Date(expiresAt),
         },
       });
     }
-    return { id, message, expiresAt, network: "TESTNET" as const };
+    return { id, message, expiresAt, network };
   }
 
   async verify(input: { challengeId: string; address: string; origin: string; signature: string }) {
@@ -65,8 +67,9 @@ export class WalletAuthService {
           id: stored.id,
           address: stored.wallet.address,
           origin: stored.origin,
-          message: this.message(stored.id, stored.wallet.address, stored.origin, stored.expiresAt.toISOString()),
+          message: this.message(stored.id, stored.wallet.address, stored.origin, stored.expiresAt.toISOString(), stored.network),
           expiresAt: stored.expiresAt.toISOString(),
+          network: stored.network,
           used: Boolean(stored.consumedAt),
         };
       }
@@ -103,11 +106,11 @@ export class WalletAuthService {
     };
   }
 
-  private message(id: string, address: string, origin: string, expiresAt: string) {
+  private message(id: string, address: string, origin: string, expiresAt: string, network: string) {
     return [
       "AI API Toll Booth authentication",
       `Address: ${address}`,
-      "Network: TESTNET",
+      `Network: ${network}`,
       `Origin: ${origin}`,
       `Nonce: ${id}`,
       `Expires: ${expiresAt}`,

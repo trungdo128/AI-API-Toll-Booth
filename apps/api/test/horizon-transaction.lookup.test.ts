@@ -28,4 +28,9 @@ describe("HorizonTransactionLookup", () => {
     });
     await expect(lookup.transaction("not-a-hash")).rejects.toThrow("Invalid transaction hash");
   });
+
+  it("allows the official Stellar Mainnet Horizon endpoint", () => {
+    expect(() => new HorizonTransactionLookup("https://horizon.stellar.org", async () => new Response()))
+      .not.toThrow();
+  });
 });

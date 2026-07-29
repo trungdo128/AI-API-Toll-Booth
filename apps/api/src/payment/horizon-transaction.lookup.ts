@@ -7,8 +7,8 @@ export class HorizonTransactionLookup implements TransactionLookup {
     private readonly baseUrl = "https://horizon-testnet.stellar.org",
     private readonly fetcher: Fetch = fetch,
   ) {
-    if (new URL(baseUrl).hostname !== "horizon-testnet.stellar.org") {
-      throw new Error("Only Stellar Testnet Horizon is allowed");
+    if (!["horizon-testnet.stellar.org", "horizon.stellar.org"].includes(new URL(baseUrl).hostname)) {
+      throw new Error("Only official Stellar Horizon endpoints are allowed");
     }
   }
 
@@ -19,7 +19,7 @@ export class HorizonTransactionLookup implements TransactionLookup {
       this.fetcher(`${base}/transactions/${hash}`, { redirect: "error" }),
       this.fetcher(`${base}/transactions/${hash}/operations?limit=20`, { redirect: "error" }),
     ]);
-    if (!transactionResponse.ok || !operationsResponse.ok) throw new Error("Transaction not found on Testnet");
+    if (!transactionResponse.ok || !operationsResponse.ok) throw new Error("Transaction not found on configured network");
     const transaction = await transactionResponse.json() as {
       successful?: boolean;
       ledger?: number;

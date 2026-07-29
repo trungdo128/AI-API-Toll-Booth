@@ -1,7 +1,10 @@
 import { Keypair } from "@stellar/stellar-sdk";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { WalletAuthService } from "../src/auth/wallet-auth.service.js";
 import type { PrismaService } from "../src/database/prisma.service.js";
+
+const originalNetwork = process.env.STELLAR_NETWORK;
+afterEach(() => { process.env.STELLAR_NETWORK = originalNetwork; });
 
 describe("WalletAuthService", () => {
   it("authenticates one signed Testnet challenge and blocks replay", async () => {
@@ -50,6 +53,16 @@ describe("WalletAuthService", () => {
       origin: "https://app.example",
       signature: wallet.sign(Buffer.from(challenge.message)).toString("base64"),
     })).rejects.toThrow("Authentication challenge expired");
+  });
+
+  it("binds the signed challenge to the configured Mainnet network", async () => {
+    process.env.STELLAR_NETWORK = "PUBLIC";
+    const challenge = await new WalletAuthService(
+      () => new Date("2026-07-28T10:00:00Z"),
+      ["https://app.example"],
+    ).issue(Keypair.random().publicKey(), "https://app.example");
+    expect(challenge).toMatchObject({ network: "PUBLIC" });
+    expect(challenge.message).toContain("Network: PUBLIC");
   });
 
   it("persists only challenge and session hashes", async () => {

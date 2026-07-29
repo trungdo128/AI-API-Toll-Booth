@@ -17,7 +17,7 @@ export type TransactionLookup = {
 };
 
 type Requirement = {
-  network: "TESTNET";
+  network: "TESTNET" | "PUBLIC";
   asset: string;
   recipient: string;
   amount: string;
@@ -32,11 +32,14 @@ function atomicUnits(amount: string): bigint {
 export class PaymentVerifierService {
   private readonly usedTransactions = new Set<string>();
 
-  constructor(private readonly lookup: TransactionLookup) {}
+  constructor(
+    private readonly lookup: TransactionLookup,
+    private readonly network = process.env.STELLAR_NETWORK || "TESTNET",
+  ) {}
 
   async verify(transactionHash: string, requirement: Requirement) {
     if (this.usedTransactions.has(transactionHash)) throw new Error("Payment transaction already used");
-    if (requirement.network !== "TESTNET") throw new Error("Wrong payment network");
+    if (requirement.network !== this.network) throw new Error("Wrong payment network");
     const transaction = await this.lookup.transaction(transactionHash);
     if (!transaction.successful || !Number.isInteger(transaction.ledger) || transaction.ledger <= 0) {
       throw new Error("Payment transaction is not confirmed");

@@ -46,4 +46,18 @@ describe("PaymentVerifierService", () => {
     await expect(lookup({}, false).verify("failed", requirement))
       .rejects.toThrow("Payment transaction is not confirmed");
   });
+
+  it("accepts a payment requirement on the configured Mainnet network", async () => {
+    const service = new PaymentVerifierService({
+      transaction: async () => ({
+        successful: true,
+        ledger: 123,
+        sourceAccount: "GPAYER",
+        operation: { type: "payment", asset: "native", destination: "GDESTINATION", amount: "0.0300000" },
+      }),
+    }, "PUBLIC");
+
+    await expect(service.verify("mainnet-payment", { ...requirement, network: "PUBLIC" }))
+      .resolves.toMatchObject({ payerAddress: "GPAYER" });
+  });
 });
