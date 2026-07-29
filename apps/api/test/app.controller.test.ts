@@ -21,6 +21,7 @@ describe("AppController", () => {
         paymentRequired: true,
         network: "TESTNET",
         requestHash: "sha256:request",
+        recipient: "GA6S6JMZEUJI6SWDJJG4KKLYXVHRFHXFJWTIY6MG57G7UEL2YN3N2TME",
       });
     }
   });

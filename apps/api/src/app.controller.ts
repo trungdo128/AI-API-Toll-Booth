@@ -28,8 +28,9 @@ export class AppController {
       apiId: "text-summarizer",
       requestHash,
       network: "TESTNET",
-      asset: process.env.STELLAR_PAYMENT_ASSET || "native",
-      recipient: process.env.PAYMENT_RECIPIENT || "CONFIGURE_PAYMENT_RECIPIENT",
+      asset: process.env.PAYMENT_ASSET || "native",
+      recipient: process.env.PAYMENT_RECIPIENT
+        || "GA6S6JMZEUJI6SWDJJG4KKLYXVHRFHXFJWTIY6MG57G7UEL2YN3N2TME",
       amount: "300000",
     });
     throw new HttpException({ paymentRequired: true, ...challenge }, 402);
