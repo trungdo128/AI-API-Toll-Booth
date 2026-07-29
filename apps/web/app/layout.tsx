@@ -5,7 +5,7 @@ import { WalletButton } from "../components/wallet-button";
 
 export const metadata: Metadata = {
   title: "AI API Toll Booth",
-  description: "Pay-per-call APIs on Stellar Testnet.",
+  description: "Pay-per-call APIs on Stellar Mainnet.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </header>
         {children}
         <footer>
-          <div><strong>AI API Toll Booth</strong><small>Stellar Testnet only</small></div>
+          <div><strong>AI API Toll Booth</strong><small>Stellar Mainnet</small></div>
           <nav aria-label="Footer navigation">
             <Link href="/marketplace">Marketplace</Link>
             <Link href="/docs">Docs</Link>

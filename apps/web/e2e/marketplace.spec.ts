@@ -1,15 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-test("browses marketplace and receives a Testnet payment challenge", async ({ page }, testInfo) => {
+test("browses marketplace and requires Freighter for a Mainnet payment", async ({ page }, testInfo) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Pay only when the API answers." })).toBeVisible();
-  await expect(page.getByText("Stellar Testnet", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Stellar Mainnet", { exact: false }).first()).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("home.png"), fullPage: true });
   await page.getByRole("link", { name: "Explore APIs" }).click();
   await expect(page).toHaveURL(/\/marketplace\/?$/);
   await page.getByRole("link", { name: "Open API →" }).first().click();
   await page.getByRole("button", { name: "Send" }).click();
-  await expect(page.getByText("HTTP 402", { exact: false }).last()).toBeVisible();
+  await expect(page.getByText("Connect Freighter before paying.", { exact: true })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("marketplace.png"), fullPage: true });
 });
 
