@@ -1,4 +1,6 @@
 import { signTransaction } from "@stellar/freighter-api";
+import { Client as RegistryClient } from "@ai-api-toll-booth/stellar";
+import { Buffer } from "buffer";
 import {
   Account,
   Asset,
@@ -8,6 +10,8 @@ import {
 } from "@stellar/stellar-sdk";
 
 export const walletStorageKey = "toll-booth:wallet";
+export const registryContractId = "CAUZWSIVXANXFQWJWY4QYWCZUBV7NNSG54C7IRYI2MY7DY2UYDIDLG7X";
+const mainnetRpcUrl = "https://stellar.api.onfinality.io/public";
 
 type PaymentChallenge = {
   id: string;
@@ -43,10 +47,9 @@ export function buildPaymentXdr(input: {
 export async function payChallenge(challenge: PaymentChallenge, payer: string) {
   if (challenge.asset !== "native") throw new Error("Only native XLM payments are supported.");
   const network = challenge.network.toUpperCase();
-  const networkPassphrase = network === "PUBLIC" ? Networks.PUBLIC : Networks.TESTNET;
-  const horizon = network === "PUBLIC"
-    ? "https://horizon.stellar.org"
-    : "https://horizon-testnet.stellar.org";
+  if (network !== "PUBLIC") throw new Error("Switch Freighter to Stellar Mainnet.");
+  const networkPassphrase = Networks.PUBLIC;
+  const horizon = "https://horizon.stellar.org";
   const accountResponse = await fetch(`${horizon}/accounts/${payer}`);
   if (!accountResponse.ok) throw new Error("Connected wallet is not funded on the selected network.");
   const account = await accountResponse.json() as { sequence: string };
@@ -69,4 +72,23 @@ export async function payChallenge(challenge: PaymentChallenge, payer: string) {
     throw new Error(`Stellar rejected the payment: ${JSON.stringify(result.extras?.result_codes || result)}`);
   }
   return { transactionHash: result.hash };
+}
+
+export async function registerProvider(provider: string, profile: string) {
+  const metadataHash = Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(profile)));
+  const registry = new RegistryClient({
+    contractId: registryContractId,
+    networkPassphrase: Networks.PUBLIC,
+    rpcUrl: mainnetRpcUrl,
+    publicKey: provider,
+    signTransaction,
+  });
+  const transaction = await registry.register_provider({
+    provider,
+    metadata_hash: metadataHash,
+  });
+  const sent = await transaction.signAndSend();
+  const transactionHash = sent.sendTransactionResponse?.hash;
+  if (!transactionHash) throw new Error("The registry transaction was not submitted.");
+  return { transactionHash };
 }

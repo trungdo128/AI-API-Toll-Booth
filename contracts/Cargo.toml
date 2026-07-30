@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["contracts/*"]
+members = ["api_marketplace_registry"]
 
 [workspace.dependencies]
 soroban-sdk = "27"

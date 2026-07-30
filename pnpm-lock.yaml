@@ -70,6 +70,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@ai-api-toll-booth/stellar':
+        specifier: workspace:*
+        version: link:../../packages/stellar
       '@react-three/fiber':
         specifier: 9.6.1
         version: 9.6.1(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(three@0.185.1)
@@ -79,6 +82,9 @@ importers:
       '@stellar/stellar-sdk':
         specifier: 14.5.0
         version: 14.5.0
+      buffer:
+        specifier: 6.0.3
+        version: 6.0.3
       next:
         specifier: 16.2.12
         version: 16.2.12(@playwright/test@1.62.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)

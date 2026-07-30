@@ -26,10 +26,21 @@ Stellar provides low-cost settlement, fast finality, public transaction evidence
 - `apps/web`: Next.js static export, accessible wallet flow, marketplace, provider/admin/docs pages and a lazy React Three Fiber hero.
 - `apps/api`: NestJS, Prisma and PostgreSQL; replay-safe wallet sessions, catalog, payment verification and protected API routing.
 - `apps/agent-client`: reference HTTP 402 client.
-- `packages/contracts`: Rust Soroban marketplace registry.
+- `contracts`: Rust Soroban marketplace registry.
 - `packages/stellar`: generated TypeScript contract bindings.
 
 Private keys and seed phrases are never requested. Provider credentials remain server-side. Database URLs and operational secrets belong in Railway/`.env`, never Git.
+
+## Smart contract entrypoints
+
+- Contract manifest: [`contracts/api_marketplace_registry/Cargo.toml`](contracts/api_marketplace_registry/Cargo.toml)
+- Soroban source: [`contracts/api_marketplace_registry/src/lib.rs`](contracts/api_marketplace_registry/src/lib.rs)
+- Generated TypeScript binding: [`packages/stellar/src/index.ts`](packages/stellar/src/index.ts)
+- Frontend integration: [`apps/web/lib/stellar-payment.ts`](apps/web/lib/stellar-payment.ts)
+- Mainnet provider action: [`apps/web/components/provider-registration.tsx`](apps/web/components/provider-registration.tsx)
+- Contract and frontend CI: [`.github/workflows/verify.yml`](.github/workflows/verify.yml)
+
+The frontend calls the contract function `register_provider` through the generated client, prompts Freighter to sign on Mainnet and displays the submitted transaction hash.
 
 ## Live Mainnet deployment
 

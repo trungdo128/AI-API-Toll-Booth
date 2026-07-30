@@ -8,12 +8,14 @@
     "test": "vitest run lib"
   },
   "dependencies": {
+    "@ai-api-toll-booth/stellar": "workspace:*",
     "@react-three/fiber": "9.6.1",
     "@stellar/freighter-api": "6.0.1",
     "@stellar/stellar-sdk": "14.5.0",
     "next": "16.2.12",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "buffer": "6.0.3",
     "three": "0.185.1"
   },
   "devDependencies": {

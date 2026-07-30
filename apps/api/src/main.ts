@@ -29,8 +29,8 @@ async function bootstrap() {
         styleSrc: ["'self'", "'unsafe-inline'"],
         connectSrc: [
           "'self'",
-          process.env.STELLAR_RPC_URL || "https://soroban-testnet.stellar.org",
-          process.env.STELLAR_HORIZON_URL || "https://horizon-testnet.stellar.org",
+          process.env.STELLAR_RPC_URL || "https://stellar.api.onfinality.io/public",
+          process.env.STELLAR_HORIZON_URL || "https://horizon.stellar.org",
         ],
       },
     },

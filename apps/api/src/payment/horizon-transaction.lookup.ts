@@ -4,7 +4,7 @@ type Fetch = (input: string | URL, init?: RequestInit) => Promise<Response>;
 
 export class HorizonTransactionLookup implements TransactionLookup {
   constructor(
-    private readonly baseUrl = "https://horizon-testnet.stellar.org",
+    private readonly baseUrl = "https://horizon.stellar.org",
     private readonly fetcher: Fetch = fetch,
   ) {
     if (!["horizon-testnet.stellar.org", "horizon.stellar.org"].includes(new URL(baseUrl).hostname)) {
