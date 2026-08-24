@@ -1,17 +1,20 @@
 import { Controller, Get, Header, Headers, HttpException, Inject } from "@nestjs/common";
 import { PaymentChallengeService } from "./payment/payment-challenge.service.js";
 import { ReceiptRegistry } from "./receipt-registry.js";
+import type { StellarSettings } from "./config/stellar.config.js";
+import { STELLAR_SETTINGS } from "./config/stellar.tokens.js";
 
 @Controller()
 export class AppController {
   constructor(
     private readonly challenges: PaymentChallengeService,
     @Inject(ReceiptRegistry) private readonly receipts: Pick<ReceiptRegistry, "has">,
+    @Inject(STELLAR_SETTINGS) private readonly stellar: StellarSettings,
   ) {}
 
   @Get("health")
   health() {
-    return { status: "ok", service: "ai-api-toll-booth", network: "PUBLIC" };
+    return { status: "ok", service: "ai-api-toll-booth", network: this.stellar.network };
   }
 
   @Get("api/protected")
@@ -27,9 +30,9 @@ export class AppController {
     const challenge = await this.challenges.issue({
       apiId: "text-summarizer",
       requestHash,
-      network: "PUBLIC",
-      asset: process.env.PAYMENT_ASSET || "native",
-      recipient: "GCKJEORLGORT3BOUME2DQJQPKRSKST55BIZOSDZTNJ7FIGIV4KQMDDPX",
+      network: this.stellar.network,
+      asset: this.stellar.paymentAsset,
+      recipient: this.stellar.paymentRecipient,
       amount: "300000",
     });
     throw new HttpException({ paymentRequired: true, ...challenge }, 402);

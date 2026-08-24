@@ -11,6 +11,8 @@ import { ReceiptRegistry } from "./receipt-registry.js";
 import { PrismaService } from "./database/prisma.service.js";
 import { CatalogController } from "./catalog/catalog.controller.js";
 import { CatalogService } from "./catalog/catalog.service.js";
+import { readStellarSettings, type StellarSettings } from "./config/stellar.config.js";
+import { STELLAR_SETTINGS } from "./config/stellar.tokens.js";
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
@@ -22,10 +24,16 @@ import { CatalogService } from "./catalog/catalog.service.js";
     PrismaService,
     CatalogService,
     {
+      provide: STELLAR_SETTINGS,
+      useFactory: () => readStellarSettings(),
+    },
+    {
       provide: PAYMENT_VERIFIER,
-      useFactory: () => new PaymentVerifierService(new HorizonTransactionLookup(
-        "https://horizon.stellar.org",
-      ), "PUBLIC"),
+      inject: [STELLAR_SETTINGS],
+      useFactory: (settings: StellarSettings) => new PaymentVerifierService(
+        new HorizonTransactionLookup(settings.horizonUrl),
+        settings.network,
+      ),
     },
     {
       provide: ALLOWED_ORIGINS,
