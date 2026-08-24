@@ -13,7 +13,10 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["Pixel 7"], channel: "chrome" } },
   ],
   webServer: {
-    command: "set PORT=3107&& corepack pnpm --filter @toll-booth/api start",
+    // Passing PORT through `env` keeps this working off Windows, where `set VAR=`
+    // is not how a POSIX shell exports a variable and the API would bind 3000.
+    command: "corepack pnpm --filter @toll-booth/api start",
+    env: { PORT: "3107" },
     cwd: "../..",
     url: "http://127.0.0.1:3107/health",
     reuseExistingServer: true,
