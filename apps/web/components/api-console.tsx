@@ -11,12 +11,14 @@ type Challenge = {
   amount: string;
 };
 
-export function ApiConsole() {
+export function ApiConsole({ apiId }: { apiId?: string }) {
   const [result, setResult] = useState("Ready to send a request.");
   const call = async () => {
     setResult("Requesting…");
     try {
-      const response = await fetch("/api/protected", { headers: { "x-request-hash": "sha256:browser-demo" } });
+      const headers: Record<string, string> = { "x-request-hash": "sha256:browser-demo" };
+      if (apiId) headers["x-api-id"] = apiId;
+      const response = await fetch("/api/protected", { headers });
       const body = await response.json() as Challenge;
       if (response.status !== 402) {
         setResult(`HTTP ${response.status}\n${JSON.stringify(body, null, 2)}`);
@@ -37,10 +39,7 @@ export function ApiConsole() {
         throw new Error(verification.error || "Payment verification failed.");
       }
       const retry = await fetch("/api/protected", {
-        headers: {
-          "x-request-hash": "sha256:browser-demo",
-          "x-payment-receipt": verification.receipt,
-        },
+        headers: { ...headers, "x-payment-receipt": verification.receipt },
       });
       setResult(`Transaction ${transactionHash}\nHTTP ${retry.status}\n${JSON.stringify(await retry.json(), null, 2)}`);
     } catch (error) {

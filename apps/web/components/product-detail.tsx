@@ -55,7 +55,7 @@ export function ProductDetail({ slug }: { slug: string }) {
         </dl>
       ) : <p className="empty-state">This API has no published plan yet.</p>}
       <h2>Try the payment challenge</h2>
-      <ApiConsole />
+      <ApiConsole apiId={product.slug} />
     </>
   );
 }
