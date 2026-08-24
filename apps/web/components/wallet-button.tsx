@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { getNetwork, isConnected, requestAccess } from "@stellar/freighter-api";
 import { isExpectedNetwork } from "../lib/network";
+import { stellarProfile } from "../lib/stellar-network";
 import { walletStorageKey } from "../lib/stellar-payment";
 
-const expectedNetwork = "PUBLIC";
-const networkLabel = expectedNetwork === "PUBLIC" ? "Mainnet" : "Testnet";
+const { network: expectedNetwork, label: networkLabel } = stellarProfile();
 
 export function WalletButton() {
   const [label, setLabel] = useState("Connect wallet");
