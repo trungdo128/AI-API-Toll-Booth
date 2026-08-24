@@ -19,7 +19,15 @@ Stellar provides low-cost settlement, fast finality, public transaction evidence
 - Provider: apply, publish an encrypted-upstream API product and monitor usage.
 - Admin: approve or suspend providers/products, pause registry creation and review audit records.
 
-`request → HTTP 402 challenge → wallet approval → Mainnet verification → receipt → retry → API response`
+`request → HTTP 402 challenge → wallet approval → payment verification → receipt → retry → API response`
+
+The challenge names the product being bought through the `x-api-id` header and is
+priced from that product's cheapest published plan, read from the catalog at
+request time. Republishing a price changes what the route quotes; no figure is
+fixed in the service. See [`docs/api-reference.md`](docs/api-reference.md).
+
+Connecting a wallet also signs a single-use server challenge, so an address is
+proved rather than asserted by the browser.
 
 ## Architecture
 
