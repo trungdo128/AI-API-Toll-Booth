@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { CatalogService } from "../src/catalog/catalog.service.js";
 import type { PrismaService } from "../src/database/prisma.service.js";
+import type { StellarSettings } from "../src/config/stellar.config.js";
+
+const mainnet: StellarSettings = {
+  network: "PUBLIC",
+  horizonUrl: "https://horizon.stellar.org",
+  paymentAsset: "native",
+  paymentRecipient: "GCKJEORLGORT3BOUME2DQJQPKRSKST55BIZOSDZTNJ7FIGIV4KQMDDPX",
+};
 
 describe("CatalogService", () => {
   it("serializes bigint plan amounts without exposing upstream credentials", async () => {
@@ -20,9 +28,25 @@ describe("CatalogService", () => {
       },
     } as unknown as PrismaService;
 
-    const result = await new CatalogService(prisma).list();
+    const result = await new CatalogService(prisma, mainnet).list();
     expect(result[0]?.plans[0]?.amount).toBe("300000");
     expect(result[0]).not.toHaveProperty("upstreamUrlEncrypted");
     expect(result[0]).not.toHaveProperty("credentialEncrypted");
+  });
+
+  it("reads recent activity for the configured network", async () => {
+    let requestedNetwork: unknown;
+    const prisma = {
+      paymentReceipt: {
+        findMany: async (query: { where: { challenge: { network: string } } }) => {
+          requestedNetwork = query.where.challenge.network;
+          return [];
+        },
+      },
+    } as unknown as PrismaService;
+
+    await new CatalogService(prisma, { ...mainnet, network: "TESTNET" }).activity();
+
+    expect(requestedNetwork).toBe("TESTNET");
   });
 });

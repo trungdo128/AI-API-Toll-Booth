@@ -1,9 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service.js";
+import type { StellarSettings } from "../config/stellar.config.js";
+import { STELLAR_SETTINGS } from "../config/stellar.tokens.js";
 
 @Injectable()
 export class CatalogService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(STELLAR_SETTINGS) private readonly stellar: StellarSettings,
+  ) {}
 
   async list() {
     const products = await this.prisma.apiProduct.findMany({
@@ -30,7 +35,7 @@ export class CatalogService {
 
   async activity() {
     return this.prisma.paymentReceipt.findMany({
-      where: { challenge: { network: "PUBLIC" } },
+      where: { challenge: { network: this.stellar.network } },
       take: 50,
       orderBy: { confirmedAt: "desc" },
       select: {
