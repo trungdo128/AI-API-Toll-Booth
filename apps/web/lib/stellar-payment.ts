@@ -8,10 +8,20 @@ import {
   Operation,
   TransactionBuilder,
 } from "@stellar/stellar-sdk";
+import { stellarProfile } from "./stellar-network";
 
 export const walletStorageKey = "toll-booth:wallet";
-export const registryContractId = "CAUZWSIVXANXFQWJWY4QYWCZUBV7NNSG54C7IRYI2MY7DY2UYDIDLG7X";
-const mainnetRpcUrl = "https://stellar.api.onfinality.io/public";
+
+// The registry and its RPC belong to one network, so both follow the build's
+// network rather than being pinned to Mainnet in source.
+export const registryContractId = process.env.NEXT_PUBLIC_REGISTRY_CONTRACT_ID
+  || "CAUZWSIVXANXFQWJWY4QYWCZUBV7NNSG54C7IRYI2MY7DY2UYDIDLG7X";
+const profile = stellarProfile();
+const networkPassphrase = profile.network === "PUBLIC" ? Networks.PUBLIC : Networks.TESTNET;
+const sorobanRpcUrl = process.env.NEXT_PUBLIC_STELLAR_RPC_URL
+  || (profile.network === "PUBLIC"
+    ? "https://stellar.api.onfinality.io/public"
+    : "https://soroban-testnet.stellar.org");
 
 type PaymentChallenge = {
   id: string;
@@ -47,9 +57,8 @@ export function buildPaymentXdr(input: {
 export async function payChallenge(challenge: PaymentChallenge, payer: string) {
   if (challenge.asset !== "native") throw new Error("Only native XLM payments are supported.");
   const network = challenge.network.toUpperCase();
-  if (network !== "PUBLIC") throw new Error("Switch Freighter to Stellar Mainnet.");
-  const networkPassphrase = Networks.PUBLIC;
-  const horizon = "https://horizon.stellar.org";
+  if (network !== profile.network) throw new Error(`Switch Freighter to Stellar ${profile.label}.`);
+  const horizon = profile.horizonUrl;
   const accountResponse = await fetch(`${horizon}/accounts/${payer}`);
   if (!accountResponse.ok) throw new Error("Connected wallet is not funded on the selected network.");
   const account = await accountResponse.json() as { sequence: string };
@@ -78,8 +87,8 @@ export async function registerProvider(provider: string, profile: string) {
   const metadataHash = Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(profile)));
   const registry = new RegistryClient({
     contractId: registryContractId,
-    networkPassphrase: Networks.PUBLIC,
-    rpcUrl: mainnetRpcUrl,
+    networkPassphrase,
+    rpcUrl: sorobanRpcUrl,
     publicKey: provider,
     signTransaction,
   });
