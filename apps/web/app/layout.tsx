@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./styles.css";
 import { WalletButton } from "../components/wallet-button";
+import { stellarProfile } from "../lib/stellar-network";
 
 export const metadata: Metadata = {
   title: "AI API Toll Booth",
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </header>
         {children}
         <footer>
-          <div><strong>AI API Toll Booth</strong><small>Stellar Mainnet</small></div>
+          <div><strong>AI API Toll Booth</strong><small>Stellar {stellarProfile().label}</small></div>
           <nav aria-label="Footer navigation">
             <Link href="/marketplace">Marketplace</Link>
             <Link href="/docs">Docs</Link>
