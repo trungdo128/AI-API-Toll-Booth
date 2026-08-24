@@ -5,6 +5,12 @@ import { CatalogService } from "./catalog/catalog.service.js";
 import type { StellarSettings } from "./config/stellar.config.js";
 import { STELLAR_SETTINGS } from "./config/stellar.tokens.js";
 
+/** Only the published plans matter here, so the controller does not depend on the
+ * Prisma row shape the catalog happens to return today. */
+type PlanSource = {
+  bySlug(slug: string): Promise<{ plans: Array<{ asset: string; amount: string }> }>;
+};
+
 /** The advertised price is the cheapest published plan, matching what the site lists. */
 function entryPlan(product: { plans: Array<{ asset: string; amount: string }> }) {
   return [...product.plans]
@@ -18,7 +24,7 @@ export class AppController {
     private readonly challenges: PaymentChallengeService,
     @Inject(ReceiptRegistry) private readonly receipts: Pick<ReceiptRegistry, "has">,
     @Inject(STELLAR_SETTINGS) private readonly stellar: StellarSettings,
-    @Inject(CatalogService) private readonly catalog: Pick<CatalogService, "bySlug">,
+    @Inject(CatalogService) private readonly catalog: PlanSource,
   ) {}
 
   @Get("health")
