@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
@@ -17,7 +17,14 @@ function htmlDocuments(directory: string): string[] {
 
 async function bootstrap() {
   const webRoot = join(process.cwd(), "../web/out");
-  const scriptHashes = inlineScriptHashes(htmlDocuments(webRoot));
+  // The static bundle is built by a sibling workspace. When it is missing the API
+  // still has to listen, otherwise the platform health check only ever sees a
+  // container that exited before binding a port.
+  const webBundlePresent = existsSync(webRoot);
+  if (!webBundlePresent) {
+    console.warn(`[api] static web bundle not found at ${webRoot}; serving the API only`);
+  }
+  const scriptHashes = webBundlePresent ? inlineScriptHashes(htmlDocuments(webRoot)) : [];
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: true,
   });
@@ -36,7 +43,7 @@ async function bootstrap() {
     },
   }));
   app.enableShutdownHooks();
-  app.useStaticAssets(webRoot);
+  if (webBundlePresent) app.useStaticAssets(webRoot);
   await app.listen(Number(process.env.PORT || 3000), "0.0.0.0");
 }
 
